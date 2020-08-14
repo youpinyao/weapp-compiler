@@ -3,7 +3,7 @@
 ## 安装
 
 ```node
-npm i weapp-webpack -D
+npm i youpinyao-weapp-webpack -D
 ```
 
 ## 调试
