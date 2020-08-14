@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // const chalk = require('chalk');
 const webpack = require('webpack');
 const isError = require('./utils/error');
