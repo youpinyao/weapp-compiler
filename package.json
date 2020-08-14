@@ -11,6 +11,9 @@
     "type": "git",
     "url": "https://github.com/youpinyao/weapp-webpack.git"
   },
+  "bin": {
+    "weapp": "build/index.js"
+  },
   "author": "youpinyao",
   "license": "ISC",
   "dependencies": {
