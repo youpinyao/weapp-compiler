@@ -9,19 +9,21 @@ const fse = require('fs-extra');
 const path = require('path');
 const chalk = require('chalk');
 const dayjs = require('dayjs');
+const config = require('./config');
 
 function clearConsole() {
   process.stdout.write(process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H');
   console.log('[weapp]', chalk.yellow(dayjs().format('YYYY-MM-DD HH:mm:ss')));
 }
 
-function clearOutput(output) {
+function clearOutput() {
+  const output = config().output;
   if (fse.existsSync(output)) {
     fse.readdirSync(output).forEach((file) => {
       fse.removeSync(path.resolve(output, file));
     });
   }
-  console.log('[weapp]', chalk.green(`${output} 删除成功`));
+  // console.log('[weapp]', chalk.green(`${output} 删除成功`));
 }
 
 module.exports = {

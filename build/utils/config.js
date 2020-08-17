@@ -9,6 +9,7 @@ module.exports = () => {
       JSON.stringify(
         {
           modules: {},
+          ignore: [],
           output: 'dist',
           context: 'src',
         },
@@ -21,6 +22,7 @@ module.exports = () => {
 
   config.output = path.resolve(process.cwd(), config.output);
   config.context = path.resolve(process.cwd(), config.context);
+  config.ignore = (config.ignore || []).map((item) => path.resolve(config.output, item));
 
   return config;
 };

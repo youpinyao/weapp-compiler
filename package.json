@@ -17,9 +17,14 @@
   "author": "youpinyao",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
     "chalk": "^4.1.0",
     "dayjs": "^1.8.33",
     "fs-extra": "^9.0.1",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "progress": "^2.0.3",
     "watch": "^1.0.2"
   },
   "devDependencies": {
