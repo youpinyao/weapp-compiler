@@ -1,7 +1,6 @@
 const chalk = require('chalk');
 const fse = require('fs-extra');
 const watch = require('watch');
-const dayjs = require('dayjs');
 const getConfig = require('../utils/config');
 const copyModuleSync = require('../utils/module');
 const copy = require('../utils/copy');
@@ -23,7 +22,6 @@ module.exports = () => {
       const date = +new Date();
 
       clearConsole();
-      console.log('[weapp]', chalk.yellow(dayjs().format('YYYY-MM-DD HH:mm:ss')));
       if (typeof files == 'object' && prev === null && curr === null) {
         // Finished walking the tree
         // console.log(f, 'Finished walking the tree');

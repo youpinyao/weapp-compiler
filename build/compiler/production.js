@@ -2,7 +2,7 @@ const chalk = require('chalk');
 const copy = require('../utils/copy');
 const copyModuleSync = require('../utils/module');
 const getConfig = require('../utils/config');
-const { clearOutput } = require('../utils/clear');
+const { clearOutput, clearConsole } = require('../utils/clear');
 const getFiles = require('../utils/files');
 
 module.exports = () => {
@@ -16,6 +16,7 @@ module.exports = () => {
     count++;
   };
 
+  clearConsole();
   clearOutput(config.output);
   copyModuleSync(config.output);
 
