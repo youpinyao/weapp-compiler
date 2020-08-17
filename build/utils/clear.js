@@ -5,12 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+const fse = require('fs-extra');
+const path = require('path');
+const chalk = require('chalk');
 
 function clearConsole() {
-  process.stdout.write(
-    process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H'
-  );
+  process.stdout.write(process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H');
 }
 
-module.exports = clearConsole;
+function clearOutput(output) {
+  if (fse.existsSync(output)) {
+    fse.readdirSync(output).forEach((file) => {
+      fse.removeSync(path.resolve(output, file));
+    });
+  }
+  console.log('[weapp]', chalk.green(`${output} 删除成功`));
+}
+
+module.exports = {
+  clearConsole,
+  clearOutput,
+};

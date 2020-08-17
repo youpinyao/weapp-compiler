@@ -19,5 +19,8 @@ module.exports = () => {
   }
   const config = fse.readJSONSync(configPath);
 
+  config.output = path.resolve(process.cwd(), config.output);
+  config.context = path.resolve(process.cwd(), config.context);
+
   return config;
 };
