@@ -10,6 +10,7 @@ module.exports = (to) =>
       'import ',
       'from ',
       'src=',
+      'url(',
     ];
 
     conditions = conditions.map(item => `${item}'`).concat(conditions.map(item => `${item}"`));
