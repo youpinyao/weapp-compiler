@@ -1,4 +1,4 @@
-# weapp webpack
+# weapp compiler
 
 ## 功能
 
