@@ -4,6 +4,13 @@ const path = require('path');
 module.exports = (_dir) => {
   const allFiles = [];
   const loadDir = (dir) => {
+    const stat = fs.statSync(dir);
+
+    if (stat.isFile()) {
+      allFiles.push(dir);
+      return;
+    }
+
     const files = fs.readdirSync(dir);
 
     files.forEach((file) => {

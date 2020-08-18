@@ -1,13 +1,11 @@
 const chalk = require('chalk');
-const path = require('path');
 const ProgressBar = require('progress');
 const copy = require('../utils/copy');
 const getConfig = require('../utils/config');
-const { pathExists } = require('fs-extra');
-// const { clearConsole } = require('../utils/clear');
+const { clearConsole } = require('../utils/clear');
 
 module.exports = async (files, prefix = '[src]') => {
-  // clearConsole();
+  clearConsole();
 
   let count = 0;
   const config = getConfig();

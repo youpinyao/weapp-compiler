@@ -13,8 +13,8 @@ module.exports = () => {
           output: 'dist',
           context: 'src',
         },
-        '',
-        '\t',
+        null,
+        2,
       ),
     );
   }

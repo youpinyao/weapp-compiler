@@ -1,15 +1,18 @@
 const fse = require('fs-extra');
-const gulp = require('gulp');
-const path = require('path');
-const babel = require('gulp-babel');
+const gulpSass = require('../gulp/sass');
+const gulpLess = require('../gulp/less');
 
 module.exports = (from, to) => {
   if (!from || !to) {
     throw new Error(`文件路径不能为空 from:${from} to:${to}`);
   }
   return new Promise((resolve) => {
-    if (/(\.js)$/g.test(from)) {
-      gulpBabel(from, to).then(() => {
+    if (/(\.scss)$/g.test(from)) {
+      gulpSass(from, to).then(() => {
+        resolve();
+      });
+    } else if (/(\.less)$/g.test(from)) {
+      gulpLess(from, to).then(() => {
         resolve();
       });
     } else {
@@ -19,19 +22,3 @@ module.exports = (from, to) => {
     }
   });
 };
-
-async function gulpBabel(from, to) {
-  return new Promise((resolve) => {
-    gulp
-      .src(from)
-      .pipe(
-        babel({
-          presets: ['@babel/preset-env'],
-        }),
-      )
-      .pipe(gulp.dest(path.resolve(to, '../')))
-      .on('end', () => {
-        resolve();
-      });
-  });
-}
