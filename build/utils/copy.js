@@ -1,6 +1,7 @@
 const gulpSass = require('../gulp/sass');
 const gulpLess = require('../gulp/less');
 const gulpFile = require('../gulp/file');
+const fse = require('fs-extra');
 
 module.exports = (from, to) => {
   if (!from || !to) {
@@ -15,10 +16,13 @@ module.exports = (from, to) => {
       gulpLess(from, to).then(() => {
         resolve();
       });
-    } else {
+    } else if (/\.(js|wxml|wxss|wxs|json)/g.test(from)) {
       gulpFile(from, to).then(() => {
         resolve();
       });
+    } else {
+      fse.copySync(from, to);
+      resolve();
     }
   });
 };
