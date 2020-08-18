@@ -48,7 +48,7 @@ weapp build
   ],
   // 别名
   "alias": {
-    "@utils": path.resolve(process.cwd(), 'src/utils')
+    "@utils": "utils"
   }
 }
 ```
