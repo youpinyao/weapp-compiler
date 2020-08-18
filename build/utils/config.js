@@ -12,6 +12,7 @@ module.exports = () => {
           ignore: [],
           output: 'dist',
           context: 'src',
+          alias: {},
         },
         null,
         2,

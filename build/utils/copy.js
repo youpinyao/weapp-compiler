@@ -1,6 +1,7 @@
 const fse = require('fs-extra');
 const gulpSass = require('../gulp/sass');
 const gulpLess = require('../gulp/less');
+const gulpFile = require('../gulp/file');
 
 module.exports = (from, to) => {
   if (!from || !to) {
@@ -16,7 +17,7 @@ module.exports = (from, to) => {
         resolve();
       });
     } else {
-      fse.copy(from, to, async () => {
+      gulpFile(from, to).then(() => {
         resolve();
       });
     }

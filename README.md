@@ -1,9 +1,16 @@
 # weapp webpack
 
+## 功能
+
+- [x] sass解析
+- [x] less解析
+- [x] alias 别名解析
+
+
 ## 安装
 
 ```node
-npm i youpinyao-weapp-webpack -D
+npm i weapp-compiler -D
 ```
 
 ## 调试
@@ -32,6 +39,14 @@ weapp build
   // npm模块同步，npm路径 => output路径
   "modules": {
     "vant-weapp/dist": "vant-weapp"
+  },
+  // 忽略文件夹
+  "ignore": [
+    "vant-weapp/badge"
+  ],
+  // 别名
+  "alias": {
+    "@utils": path.resolve(process.cwd(), 'src/utils')
   }
 }
 ```
