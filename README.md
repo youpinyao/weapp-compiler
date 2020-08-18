@@ -5,6 +5,8 @@
 - [x] sass解析
 - [x] less解析
 - [x] alias 别名解析
+- [x] node_modules 模块手动同步
+- [x] node_modules 模块自动同步
 
 
 ## 安装
@@ -36,7 +38,7 @@ weapp build
   "context": "src",
   // 输出目录
   "output": "dist",
-  // npm模块同步，npm路径 => output路径
+  // npm模块同步，node_modules路径 => output路径
   "modules": {
     "vant-weapp/dist": "vant-weapp"
   },

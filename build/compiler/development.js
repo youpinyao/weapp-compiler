@@ -2,7 +2,7 @@ const chalk = require('chalk');
 const fse = require('fs-extra');
 const watch = require('watch');
 const getConfig = require('../utils/config');
-const copyModuleSync = require('../utils/module');
+const moduleSync = require('./module');
 const copy = require('../utils/copy');
 const { clearConsole, clearOutput } = require('../utils/clear');
 const compiler = require('./compiler');
@@ -12,7 +12,7 @@ module.exports = async () => {
   const convertToOutput = (file) => file.replace(config.context, config.output);
 
   clearOutput();
-  await copyModuleSync();
+  await moduleSync();
 
   watch.watchTree(
     config.context,

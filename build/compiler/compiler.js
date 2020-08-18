@@ -18,7 +18,7 @@ module.exports = async (files, prefix = '[src]') => {
       from,
     });
   };
-  const bar = new ProgressBar(`[weapp] ${prefix} [:bar] :current/:total [:from]`, {
+  const bar = new ProgressBar(`[weapp] ${chalk.yellow(`${prefix} [:bar] :current/:total [:from]`)}`, {
     complete: '=',
     incomplete: ' ',
     width: 20,

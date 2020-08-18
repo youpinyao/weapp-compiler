@@ -8,10 +8,10 @@ module.exports = () => {
       configPath,
       JSON.stringify(
         {
-          modules: {},
-          ignore: [],
           output: 'dist',
           context: 'src',
+          modules: {},
+          ignore: [],
           alias: {},
         },
         null,
@@ -21,9 +21,12 @@ module.exports = () => {
   }
   const config = fse.readJSONSync(configPath);
 
-  config.output = path.resolve(process.cwd(), config.output);
-  config.context = path.resolve(process.cwd(), config.context);
+  // 默认值， 并且转换
+  config.output = path.resolve(process.cwd(), config.output || 'dist');
+  config.context = path.resolve(process.cwd(), config.context || 'src');
   config.ignore = (config.ignore || []).map((item) => path.resolve(config.output, item));
+  config.modules = config.modules || {};
+  config.alias = config.alias || {};
 
   return config;
 };

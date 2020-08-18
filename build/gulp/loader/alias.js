@@ -2,7 +2,7 @@ const through = require('through2');
 const path = require('path');
 const config = require('../../utils/config')();
 
-module.exports = (from) =>
+module.exports = (to) =>
   through.obj(function (file, enc, cb) {
     const alias = config.alias || {};
     let conditions = [
@@ -18,8 +18,8 @@ module.exports = (from) =>
 
     conditions.forEach(condition => {
       Object.keys(alias).forEach(key => {
-        const alia = path.resolve(config.context, alias[key]);
-        let converted_path = `${condition}${path.relative(path.resolve(from, '../'), alia)}`;
+        const alia = path.resolve(config.output, alias[key]);
+        let converted_path = `${condition}${path.relative(path.resolve(to, '../'), alia)}`;
 
         if (/^(https?):\/\//g.test(alias[key])) {
           converted_path = `${condition}${alias[key]}`;
