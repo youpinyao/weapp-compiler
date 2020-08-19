@@ -46,7 +46,7 @@ weapp build
   "ignore": [
     "vant-weapp/badge"
   ],
-  // 别名
+  // 别名，支持：require import src url alias(@utils)
   "alias": {
     "@utils": "utils"
   }
