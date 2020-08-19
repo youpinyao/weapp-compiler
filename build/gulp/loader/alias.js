@@ -1,4 +1,6 @@
 const through = require('through2');
+const os = require('os');
+const platform = os.platform();
 const path = require('path');
 const config = require('../../utils/config')();
 
@@ -27,6 +29,10 @@ module.exports = (to) =>
         if (/^(https?):\/\//g.test(alias[key])) {
           converted_path = alias[key];
         };
+
+        if (platform === 'win32') {
+          converted_path = converted_path.replace(/\\/g, '/');
+        }
 
         if (/^alias\(/g.test(condition)) {
           contents = contents.replace(new RegExp(`${condition.replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace('{{alias}}', key)}`, 'g'), converted_path);
