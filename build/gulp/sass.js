@@ -4,8 +4,6 @@ const sass = require('gulp-sass');
 const config = require('../utils/config')();
 const gulpTask = require('./task');
 
-sass.compiler = require('sass');
-
 module.exports = async function gulpSass(from, to) {
   return gulpTask(
     from,
