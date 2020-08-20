@@ -7,4 +7,6 @@ const compiler = {
   build: require('./compiler/production'),
 }[type];
 
+process.env.NODE_ENV = type !== 'build' ? 'development' : 'production';
+
 compiler();

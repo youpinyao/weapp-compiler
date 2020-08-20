@@ -5,11 +5,13 @@ const extname = require('./loader/extname');
 const alias = require('./loader/alias');
 const empty = require('./loader/empty');
 const node_modules = require('./loader/node_modules');
+const env = require('./loader/env');
 
 module.exports = async function gulpTask(from, to, loader = empty()) {
   return new Promise((resolve) => {
     gulp
       .src(from)
+      .pipe(env())
       .pipe(node_modules(to))
       .pipe(alias(to))
       .pipe(loader)
