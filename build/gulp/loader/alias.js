@@ -17,6 +17,7 @@ module.exports = (to) =>
 
     conditions = conditions.map(item => `${item}'`).concat(conditions.map(item => `${item}"`));
 
+    conditions.push('url(');
     conditions.push('alias({{alias}})');
 
     let contents = file.contents.toString();
