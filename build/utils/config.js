@@ -11,6 +11,7 @@ module.exports = () => {
           output: 'dist',
           context: 'src',
           modules: {},
+          ignoreExpression: [],
           ignore: [],
           alias: {},
         },
@@ -25,6 +26,7 @@ module.exports = () => {
   config.output = path.resolve(process.cwd(), config.output || 'dist');
   config.context = path.resolve(process.cwd(), config.context || 'src');
   config.ignore = (config.ignore || []).map((item) => path.resolve(config.output, item));
+  config.ignoreExpression = config.ignoreExpression || [];
   config.modules = config.modules || {};
   config.alias = config.alias || {};
 

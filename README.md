@@ -42,6 +42,10 @@ weapp build
   "modules": {
     "vant-weapp/dist": "vant-weapp"
   },
+  // 忽略正则表达式
+  "ignoreExpression": [
+    "(.d.ts)$"
+  ],
   // 忽略文件夹
   "ignore": [
     "vant-weapp/badge"

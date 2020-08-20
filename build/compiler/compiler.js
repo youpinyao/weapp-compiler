@@ -41,6 +41,9 @@ module.exports = async (files, prefix = '[src]') => {
     if (config.ignore.map((item) => to.indexOf(item)).filter((item) => item === 0).length) {
       continue;
     }
+    if (config.ignoreExpression.map((item) => (new RegExp(item, 'g')).test(to)).filter((item) => !!item).length) {
+      continue;
+    }
 
     await copySync(from, to);
   }
