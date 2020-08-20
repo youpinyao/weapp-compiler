@@ -1,7 +1,9 @@
 const gulpSass = require('../gulp/sass');
 const gulpLess = require('../gulp/less');
+const gulpJs = require('../gulp/js');
 const gulpFile = require('../gulp/file');
 const fse = require('fs-extra');
+const config = require('./config')();
 
 module.exports = (from, to) => {
   if (!from || !to) {
@@ -16,7 +18,11 @@ module.exports = (from, to) => {
       gulpLess(from, to).then(() => {
         resolve();
       });
-    } else if (/\.(js|wxml|wxss|wxs|json)/g.test(from)) {
+    } else if (/\.(js)$/g.test(from) && config.eslint) {
+      gulpJs(from, to).then(() => {
+        resolve();
+      });
+    } else if (/\.(js|wxml|wxss|wxs|json)$/g.test(from)) {
       gulpFile(from, to).then(() => {
         resolve();
       });

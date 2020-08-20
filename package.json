@@ -1,6 +1,6 @@
 {
   "name": "weapp-compiler",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "",
   "main": "build/index.js",
   "scripts": {
@@ -19,6 +19,7 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "dayjs": "^1.8.33",
+    "eslint": "^7.7.0",
     "fs-extra": "^9.0.1",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
@@ -28,7 +29,6 @@
     "watch": "^1.0.2"
   },
   "devDependencies": {
-    "eslint": "^7.6.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",

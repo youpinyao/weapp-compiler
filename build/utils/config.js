@@ -14,6 +14,7 @@ module.exports = () => {
           ignoreExpression: [],
           ignore: [],
           alias: {},
+          eslint: true,
         },
         null,
         2,
