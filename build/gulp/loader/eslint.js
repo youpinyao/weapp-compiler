@@ -1,7 +1,7 @@
 const through = require('through2');
 const chalk = require('chalk');
 const { ESLint } = require('eslint');
-const eslint = new ESLint();
+const eslint = new ESLint({ fix: false });
 
 module.exports = () =>
   through.obj(async function (file, enc, cb) {
@@ -11,14 +11,16 @@ module.exports = () =>
 
     if (error) {
       console.log();
-      console.log(chalk.red(file.path));
+      console.log();
+      console.log(chalk.red(`[${file.path}]`));
       error.messages.forEach((item) => {
         console.log();
         console.log(
           chalk.red(`${item.message} line:${item.line},colunm:${item.column} (${item.ruleId})`),
         );
       });
-      throw new Error();
+      console.log();
+      return cb(new Error(), file);
     }
     cb(null, file);
   });

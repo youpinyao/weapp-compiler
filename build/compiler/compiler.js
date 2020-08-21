@@ -18,12 +18,15 @@ module.exports = async (files, prefix = '[src]') => {
       from,
     });
   };
-  const bar = new ProgressBar(`[weapp] ${chalk.yellow(`${prefix} [:bar] :current/:total [:from]`)}`, {
-    complete: '=',
-    incomplete: ' ',
-    width: 20,
-    total: files.length,
-  });
+  const bar = new ProgressBar(
+    `[weapp] ${chalk.yellow(`${prefix} [:bar] :current/:total [:from]`)}`,
+    {
+      complete: '=',
+      incomplete: ' ',
+      width: 20,
+      total: files.length,
+    },
+  );
 
   for (let i = 0; i < files.length; i++) {
     let from;
@@ -41,11 +44,18 @@ module.exports = async (files, prefix = '[src]') => {
     if (config.ignore.map((item) => to.indexOf(item)).filter((item) => item === 0).length) {
       continue;
     }
-    if (config.ignoreExpression.map((item) => (new RegExp(item, 'g')).test(to)).filter((item) => !!item).length) {
+    if (
+      config.ignoreExpression.map((item) => new RegExp(item, 'g').test(to)).filter((item) => !!item)
+        .length
+    ) {
       continue;
     }
-
-    await copySync(from, to);
+    try {
+      await copySync(from, to);
+    } catch (error) {
+      console.error(error);
+      process.exit();
+    }
   }
 
   console.log('[weapp]', '文件总数：', chalk.green(count));
