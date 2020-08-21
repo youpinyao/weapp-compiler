@@ -4,14 +4,14 @@ const watch = require('watch');
 const getConfig = require('../utils/config');
 const moduleSync = require('./module');
 const copy = require('../utils/copy');
-const { clearConsole, clearOutput } = require('../utils/clear');
+const { clearConsole } = require('../utils/clear');
 const compiler = require('./compiler');
 
 module.exports = async () => {
   const config = getConfig();
   const convertToOutput = (file) => file.replace(config.context, config.output);
 
-  clearOutput();
+  // clearOutput();
   await moduleSync();
 
   watch.watchTree(
