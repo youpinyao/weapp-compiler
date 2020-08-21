@@ -31,18 +31,21 @@ module.exports = async () => {
         // f is a new file
         clearConsole();
         await copy(files, convertToOutput(files));
+        console.log();
         console.log('[weapp]', '新增文件：', chalk.green(files));
         console.log('[weapp]', '耗时：', chalk.green(`${+new Date() - date}ms`));
       } else if (curr.nlink === 0) {
         // f was removed
         clearConsole();
         fse.removeSync(convertToOutput(files));
+        console.log();
         console.log('[weapp]', '删除文件：', chalk.green(files));
         console.log('[weapp]', '耗时：', chalk.green(`${+new Date() - date}ms`));
       } else {
         clearConsole();
         // f was changed
         await copy(files, convertToOutput(files));
+        console.log();
         console.log('[weapp]', '更改文件：', chalk.green(files));
         console.log('[weapp]', '耗时：', chalk.green(`${+new Date() - date}ms`));
       }
