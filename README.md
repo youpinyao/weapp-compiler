@@ -7,6 +7,7 @@
 - [x] alias 别名解析
 - [x] node_modules 模块手动同步
 - [x] node_modules 模块自动同步
+- [x] eslint js校验
 
 
 ## 安装
@@ -38,6 +39,8 @@ weapp build
   "context": "src",
   // 输出目录
   "output": "dist",
+  // eslint 校验功能开关
+  "eslint": false,
   // npm模块同步，node_modules路径 => output路径
   "modules": {
     "vant-weapp/dist": "vant-weapp"
