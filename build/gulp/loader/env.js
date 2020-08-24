@@ -5,6 +5,7 @@ module.exports = () =>
     let contents = file.contents.toString();
 
     contents = contents.replace(/process\.env\.NODE_ENV /g, `'${process.env.NODE_ENV}' `);
+    contents = contents.replace(/process\.env\.NODE_ENV\)/g, `'${process.env.NODE_ENV}')`);
 
     file.contents = Buffer.from(contents);
 
