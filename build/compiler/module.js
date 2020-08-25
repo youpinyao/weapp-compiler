@@ -14,9 +14,11 @@ module.exports = async () => {
 
     await compiler(
       getFiles(module_path).map((file) => {
+        const to_path = path.resolve(config.output, config.modules[key]);
+
         return {
           from: file,
-          to: file.replace(module_path, path.resolve(config.output, config.modules[key])),
+          to: path.extname(to_path) ? to_path : file.replace(module_path, to_path),
         };
       }),
       `[${key}]`,
