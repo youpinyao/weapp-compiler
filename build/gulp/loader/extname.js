@@ -6,7 +6,7 @@ const path = require('path');
 
 module.exports = to => through.obj(function (file, enc, cb) {
   let extname = path.extname(to);
-  const basename = path.basename(to);
+  const basename = path.basename(to).replace(new RegExp(`(${extname})$`, 'g'), '');
 
   // 文件后缀转化
   if (/scss|less/g.test(extname)) {
@@ -14,7 +14,7 @@ module.exports = to => through.obj(function (file, enc, cb) {
   }
 
   file.path = replaceExtension(file.path, extname);
-  file.path = replaceBasename(file.path, basename.split('.')[0]);
+  file.path = replaceBasename(file.path, basename);
 
   cb(null, file);
 });
