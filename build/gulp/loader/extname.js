@@ -14,7 +14,7 @@ module.exports = to => through.obj(function (file, enc, cb) {
   }
 
   file.path = replaceExtension(file.path, extname);
-  file.path = replaceBasename(file.path, basename);
+  file.path = replaceBasename(file.path, basename.split('.')[0]);
 
   cb(null, file);
 });
