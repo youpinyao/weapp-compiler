@@ -12,6 +12,8 @@ module.exports = async () => {
   const config = getConfig();
   const convertToOutput = (file) =>
     file.replace(config.context, config.output).replace(/(\.(less|scss))$/g, '.wxss');
+
+  const convertToContext = (file) => file.replace(config.output, config.context);
   const compilerCss = async (file) => {
     if (/(\.(less|scss))$/g.test(file)) {
       await compiler(getFiles(config.context).filter((item) => /(\.(less|scss))$/g.test(item)));
@@ -36,6 +38,29 @@ module.exports = async () => {
         // console.log(f, 'Finished walking the tree');
 
         await compiler(Object.keys(files).filter((file) => fse.statSync(file).isFile()));
+
+        // 监听dist下的project.config.json
+        watch.watchTree(
+          config.output,
+          {
+            interval: 0.5,
+          },
+          async function (files, curr, prev) {
+            if (typeof f == 'object' && prev === null && curr === null) {
+              // Finished walking the tree
+            } else if (prev === null) {
+              // f is a new file
+            } else if (curr.nlink === 0) {
+              // f was removed
+            } else {
+              // f was changed
+              await copy(files, convertToContext(files));
+              console.log('[weapp]', '更改文件：', chalk.green(files));
+              console.log('[weapp]', '耗时：', chalk.green(`${+new Date() - date}ms`));
+            }
+          },
+        );
+        // end
       } else if (prev === null) {
         // f is a new file
         await compilerCss(files);
