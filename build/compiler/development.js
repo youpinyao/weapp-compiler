@@ -54,9 +54,14 @@ module.exports = async () => {
               // f was removed
             } else if (/(project\.config\.json)$/g.test(files)) {
               // f was changed
-              await copy(files, convertToContext(files));
-              console.log('[weapp]', '更改文件：', chalk.green(files));
-              console.log('[weapp]', '耗时：', chalk.green(`${+new Date() - date}ms`));
+              const exists = fse.existsSync(convertToContext(files));
+              const same = fse.readFileSync(files).toString() === (exists ? fse.readFileSync(convertToContext(files)).toString() : '');
+
+              if (same) {
+                await copy(files, convertToContext(files));
+                console.log('[weapp]', '更改文件：', chalk.green(files));
+                console.log('[weapp]', '耗时：', chalk.green(`${+new Date() - date}ms`));
+              }
             }
           },
         );

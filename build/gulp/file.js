@@ -1,6 +1,6 @@
 const gulpTask = require('./task');
 
-module.exports = async function gulpSass(from, to) {
+module.exports = async function gulpFile(from, to) {
   return gulpTask(
     from,
     to,

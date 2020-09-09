@@ -2,7 +2,7 @@ const less = require('gulp-less');
 const gulpTask = require('./task');
 const config = require('../utils/config')();
 
-module.exports = async function gulpSass(from, to) {
+module.exports = async function gulpLass(from, to) {
   return gulpTask(
     from,
     to,
