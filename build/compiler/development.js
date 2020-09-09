@@ -52,7 +52,7 @@ module.exports = async () => {
               // f is a new file
             } else if (curr.nlink === 0) {
               // f was removed
-            } else {
+            } else if (/(project\.config\.json)$/g.test(files)) {
               // f was changed
               await copy(files, convertToContext(files));
               console.log('[weapp]', '更改文件：', chalk.green(files));
