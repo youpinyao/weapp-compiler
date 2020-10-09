@@ -57,7 +57,7 @@ module.exports = async (files, prefix = '[src]') => {
       process.exit();
     }
   }
-
+  console.log('');
   console.log('[weapp]', '文件总数：', chalk.green(count));
   console.log('[weapp]', '耗时：', chalk.green(`${+new Date() - date}ms`));
 };

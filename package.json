@@ -1,6 +1,6 @@
 {
   "name": "weapp-compiler",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "",
   "main": "build/index.js",
   "scripts": {
@@ -17,6 +17,8 @@
   "author": "youpinyao",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
     "chalk": "^4.1.0",
     "dayjs": "^1.8.33",
     "eslint": "^7.7.0",
@@ -30,12 +32,13 @@
     "watch": "^1.0.2"
   },
   "devDependencies": {
+    "@vant/weapp": "^1.5.1",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "nodemon": "^2.0.4",
-    "vant-weapp": "^0.5.28"
+    "sr-sdk-wxapp": "^1.3.12"
   }
 }

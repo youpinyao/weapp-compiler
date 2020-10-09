@@ -13,8 +13,8 @@ module.exports = async (from, to) => {
     await gulpSass(from, to);
   } else if (/(\.less)$/g.test(from)) {
     await gulpLess(from, to);
-  } else if (/\.(js)$/g.test(from) && config.eslint) {
-    await gulpJs(from, to);
+  } else if (/\.(js)$/g.test(from)) {
+    await gulpJs(from, to, config);
   } else if (/\.(js|wxml|wxss|wxs|json)$/g.test(from)) {
     await gulpFile(from, to);
   } else {
