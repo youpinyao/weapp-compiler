@@ -1,5 +1,5 @@
 const gulpSass = require('../gulp/sass');
-const gulpLess = require('../gulp/less');
+const gulpLess = require('../gulp/less/index');
 const gulpJs = require('../gulp/js');
 const gulpFile = require('../gulp/file');
 const fse = require('fs-extra');

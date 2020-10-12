@@ -7,6 +7,7 @@ const moduleSync = require('./module');
 const copy = require('../utils/copy');
 const { clearConsole } = require('../utils/clear');
 const compiler = require('./compiler');
+const { checkCache } = require('../gulp/less/plugins/cache-import');
 
 module.exports = async () => {
   const config = getConfig();
@@ -68,22 +69,31 @@ module.exports = async () => {
         // end
       } else if (prev === null) {
         // f is a new file
-        await compilerCss(files);
+        // await compilerCss(files);
+        clearConsole();
         await copy(files, convertToOutput(files));
         console.log();
         console.log('[weapp]', '新增文件：', chalk.green(files));
         console.log('[weapp]', '耗时：', chalk.green(`${+new Date() - date}ms`));
       } else if (curr.nlink === 0) {
         // f was removed
-        await compilerCss(files);
+        // await compilerCss(files);
+        clearConsole();
         fse.removeSync(convertToOutput(files));
+        checkCache(files, async (opt) => {
+          await copy(opt.from, opt.to);
+        });
         console.log();
         console.log('[weapp]', '删除文件：', chalk.green(files));
         console.log('[weapp]', '耗时：', chalk.green(`${+new Date() - date}ms`));
       } else {
         // f was changed
-        await compilerCss(files);
+        // await compilerCss(files);
+        clearConsole();
         await copy(files, convertToOutput(files));
+        checkCache(files, async (opt) => {
+          await copy(opt.from, opt.to);
+        });
         // console.log();
         console.log('[weapp]', '更改文件：', chalk.green(files));
         console.log('[weapp]', '耗时：', chalk.green(`${+new Date() - date}ms`));

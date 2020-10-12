@@ -5,11 +5,11 @@
   "main": "build/index.js",
   "scripts": {
     "build": "node ./build/index.js build",
-    "dev": "nodemon --watch build ./build/index.js dev"
+    "dev": "nodemon --inspect --watch build ./build/index.js dev"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/youpinyao/weapp-webpack.git"
+    "url": "https://github.com/youpinyao/weapp-compiler.git"
   },
   "bin": {
     "weapp": "build/index.js"
