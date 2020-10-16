@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const fse = require('fs-extra');
 const watch = require('watch');
-const getFiles = require('../utils/files');
+// const getFiles = require('../utils/files');
 const getConfig = require('../utils/config');
 const moduleSync = require('./module');
 const copy = require('../utils/copy');
@@ -15,13 +15,13 @@ module.exports = async () => {
     file.replace(config.context, config.output).replace(/(\.(less|scss))$/g, '.wxss');
 
   const convertToContext = (file) => file.replace(config.output, config.context);
-  const compilerCss = async (file) => {
-    if (/(\.(less|scss))$/g.test(file)) {
-      await compiler(getFiles(config.context).filter((item) => /(\.(less|scss))$/g.test(item)));
-    } else {
-      clearConsole();
-    }
-  };
+  // const compilerCss = async (file) => {
+  //   if (/(\.(less|scss))$/g.test(file)) {
+  //     await compiler(getFiles(config.context).filter((item) => /(\.(less|scss))$/g.test(item)));
+  //   } else {
+  //     clearConsole();
+  //   }
+  // };
 
   // clearOutput();
   await moduleSync();
