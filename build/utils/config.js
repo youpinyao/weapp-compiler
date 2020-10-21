@@ -32,5 +32,10 @@ module.exports = () => {
   config.modules = config.modules || {};
   config.alias = config.alias || {};
 
+  // 生成输出地址
+  if (!fse.existsSync(config.output)) {
+    fse.mkdirSync(config.output);
+  }
+
   return config;
 };
