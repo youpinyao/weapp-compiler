@@ -1,6 +1,6 @@
 {
   "name": "weapp-compiler",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "",
   "main": "build/index.js",
   "scripts": {

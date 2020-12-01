@@ -2,7 +2,6 @@
 
 ## 功能
 
-- [x] sass解析
 - [x] less解析
 - [x] alias 别名解析
 - [x] node_modules 模块手动同步

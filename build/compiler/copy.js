@@ -1,9 +1,11 @@
+
+const fse = require('fs-extra');
+
 const gulpSass = require('../gulp/sass');
 const gulpLess = require('../gulp/less/index');
 const gulpJs = require('../gulp/js');
 const gulpFile = require('../gulp/file');
-const fse = require('fs-extra');
-const config = require('./config')();
+const config = require('../utils/config')();
 
 module.exports = async (from, to) => {
   if (!from || !to) {

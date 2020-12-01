@@ -1,6 +1,6 @@
 const chalk = require('chalk');
 const ProgressBar = require('progress');
-const copy = require('../utils/copy');
+const copy = require('./copy');
 const getConfig = require('../utils/config');
 const { clearConsole } = require('../utils/clear');
 
