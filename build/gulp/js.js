@@ -1,6 +1,7 @@
 const babel = require('gulp-babel');
 const gulpTask = require('./task');
 const eslint = require('./loader/eslint');
+const nodeModules = require('./loader/nodeModules');
 const regeneratorRuntime = require('./loader/regeneratorRuntime');
 
 module.exports = async function gulpJs(from, to, config) {
@@ -10,6 +11,7 @@ module.exports = async function gulpJs(from, to, config) {
   return gulpTask(
     from,
     to,
+    nodeModules(to),
     config.eslint ? eslint() : undefined,
     config.babel !== false ? gulpBabel : undefined,
     regeneratorRuntime(config, to),

@@ -4,12 +4,11 @@ const path = require('path');
 const extname = require('./loader/extname');
 const alias = require('./loader/alias');
 const empty = require('./loader/empty');
-const node_modules = require('./loader/node_modules');
 const env = require('./loader/env');
 
 module.exports = async function gulpTask(from, to, ...loaders) {
   return new Promise((resolve, reject) => {
-    let pipes = gulp.src(from).pipe(env()).pipe(node_modules(to)).pipe(alias(to));
+    let pipes = gulp.src(from).pipe(env()).pipe(alias(to));
 
     (loaders || []).forEach((loader = empty()) => {
       pipes = pipes.pipe(
