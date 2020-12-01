@@ -4,9 +4,10 @@
 
 - [x] less解析
 - [x] alias 别名解析
-- [x] node_modules 模块手动同步
-- [x] node_modules 模块自动同步
+- [x] node_modules 模块手动同步（通过配置 modules 参数）
+- [x] node_modules 模块自动同步（自动匹配node_modules下依赖）
 - [x] eslint js校验
+- [x] babel
 
 
 ## 安装
