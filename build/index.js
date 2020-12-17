@@ -1,12 +1,22 @@
 #!/usr/bin/env node
 
-const args = process.argv;
-const type = args[2];
+const { program } = require('commander');
+const path = require('path');
+const fs = require('fs');
+const { version } = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../package.json')).toString());
 const compiler = {
   dev: require('./compiler/development'),
   build: require('./compiler/production'),
-}[type];
+};
 
-process.env.NODE_ENV = type !== 'build' ? 'development' : 'production';
+program.version(version);
+program.command('dev').action((...args) => {
+  process.env.NODE_ENV = 'development';
+  compiler.dev();
+});
+program.command('build').action((...args) => {
+  process.env.NODE_ENV = 'production';
+  compiler.build();
+});
 
-compiler();
+program.parse(process.argv);

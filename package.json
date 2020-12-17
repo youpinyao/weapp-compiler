@@ -1,6 +1,6 @@
 {
   "name": "weapp-compiler",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "description": "",
   "main": "build/index.js",
   "scripts": {
@@ -20,6 +20,7 @@
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.11.5",
     "chalk": "^4.1.0",
+    "commander": "^6.2.1",
     "dayjs": "^1.8.33",
     "eslint": "^7.7.0",
     "fs-extra": "^9.0.1",
