@@ -13,7 +13,8 @@ module.exports = async function gulpTask(from, to, ...loaders) {
     (loaders || []).forEach((loader = empty()) => {
       pipes = pipes.pipe(
         loader.on('error', (e) => {
-          reject(e);
+          console.error(e);
+          resolve('');
         }),
       );
     });
