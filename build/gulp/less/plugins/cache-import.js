@@ -10,7 +10,9 @@ function CheckImport(options) {
 
 CheckImport.prototype = {
   process: function (css, extra) {
-    [].concat(extra.imports.files).forEach((file) => {
+    const files = !extra.imports.files.length ? Object.keys(extra.imports.files) : extra.imports.files;
+
+    files.forEach((file) => {
       if (!cacheRelate[file]) {
         cacheRelate[file] = {
           [this.options.from]: this.options,
