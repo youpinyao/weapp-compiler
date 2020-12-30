@@ -19,6 +19,8 @@ module.exports = async function gulpTask(from, to, ...loaders) {
       );
     });
 
+    pipes = pipes.pipe(alias(to, /(sass|less|wxss)$/g));
+
     pipes
       .pipe(extname(to))
       .pipe(gulp.dest(path.resolve(to, '../')))
