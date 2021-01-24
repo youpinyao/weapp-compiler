@@ -40,6 +40,10 @@ weapp build
   // 输出目录
   "output": "dist",
   // eslint 校验功能开关
+  // 不进行babel的规则
+  "ignoreBabelExpression": [
+    "cloudfunction/"
+  ],
   "eslint": false,
   // npm模块同步，node_modules路径 => output路径
   "modules": {

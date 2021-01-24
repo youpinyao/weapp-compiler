@@ -8,12 +8,14 @@ module.exports = async function gulpJs(from, to, config) {
   const gulpBabel = babel({
     presets: ['@babel/env'],
   });
+  const isIgnore = config.ignoreBabelExpression.some(item => new RegExp(item, 'g').test(to));
+
   return gulpTask(
     from,
     to,
     nodeModules(to),
     config.eslint ? eslint() : undefined,
-    config.babel !== false ? gulpBabel : undefined,
-    regeneratorRuntime(config, to),
+    config.babel !== false && isIgnore === false ? gulpBabel : undefined,
+    isIgnore === false ? regeneratorRuntime(config, to) : undefined,
   );
 };

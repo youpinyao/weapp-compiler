@@ -11,6 +11,7 @@ module.exports = () => {
           output: 'dist',
           context: 'src',
           modules: {},
+          ignoreBabelExpression: [],
           ignoreExpression: [],
           ignore: [],
           alias: {},
@@ -29,6 +30,7 @@ module.exports = () => {
   config.context = path.resolve(process.cwd(), config.context || 'src');
   config.ignore = (config.ignore || []).map((item) => path.resolve(config.output, item));
   config.ignoreExpression = config.ignoreExpression || [];
+  config.ignoreBabelExpression = config.ignoreBabelExpression || [];
   config.modules = config.modules || {};
   config.alias = config.alias || {};
 
