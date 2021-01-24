@@ -10,17 +10,17 @@ function CheckImport(options) {
 
 CheckImport.prototype = {
   process: function (css, extra) {
-    const files = !extra.imports.files.length ? Object.keys(extra.imports.files) : extra.imports.files;
-
-    files.forEach((file) => {
-      if (!cacheRelate[file]) {
-        cacheRelate[file] = {
-          [this.options.from]: this.options,
-        };
-      } else {
-        cacheRelate[file][this.options.from] = this.options;
-      }
-    });
+    if (extra.imports.files && extra.imports.files.forEach) {
+      extra.imports.files.forEach((file) => {
+        if (!cacheRelate[file]) {
+          cacheRelate[file] = {
+            [this.options.from]: this.options,
+          };
+        } else {
+          cacheRelate[file][this.options.from] = this.options;
+        }
+      });
+    }
     return css;
   },
 };
