@@ -13,8 +13,14 @@ module.exports = async (from, to) => {
     throw new Error(`文件路径不能为空 from:${from} to:${to}`);
   }
   const fileHash = await hasha.fromFile(from, { algorithm: 'md5' });
+  const toPath = to.replace(/\.(scss|less)$/g, '.wxss');
+  let toFileHash;
 
-  if (hash.get(from) === fileHash) {
+  if (fse.existsSync(toPath)) {
+    toFileHash = await hasha.fromFile(toPath, { algorithm: 'md5' });
+  }
+
+  if (hash.get(from) === fileHash && toFileHash && toFileHash === hash.get(toPath)) {
     return false;
   }
 
@@ -30,5 +36,8 @@ module.exports = async (from, to) => {
     fse.copySync(from, to);
   }
 
+  toFileHash = await hasha.fromFile(toPath, { algorithm: 'md5' });
+
   hash.set(from, fileHash);
+  hash.set(toPath, toFileHash);
 };

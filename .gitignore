@@ -2,3 +2,4 @@ node_modules
 dist
 .weapp.json
 src
+.weapp.hash.json
