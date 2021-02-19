@@ -42,12 +42,18 @@ module.exports = async (files, prefix = '[src]') => {
 
     // 过滤忽略文件路径
     if (config.ignore.map((item) => to.indexOf(item)).filter((item) => item === 0).length) {
+      bar.tick({
+        from,
+      });
       continue;
     }
     if (
       config.ignoreExpression.map((item) => new RegExp(item, 'g').test(to)).filter((item) => !!item)
         .length
     ) {
+      bar.tick({
+        from,
+      });
       continue;
     }
     try {
