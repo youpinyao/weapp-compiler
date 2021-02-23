@@ -1,5 +1,6 @@
 const fse = require('fs-extra');
 const hasha = require('hasha');
+const path = require('path');
 
 const gulpSass = require('../gulp/sass');
 const gulpLess = require('../gulp/less/index');
@@ -12,16 +13,28 @@ module.exports = async (from, to) => {
   if (!from || !to) {
     throw new Error(`文件路径不能为空 from:${from} to:${to}`);
   }
-  const fileHash = await hasha.fromFile(from, { algorithm: 'md5' });
+  const fromFileHash = await hasha.fromFile(from, { algorithm: 'md5' });
   const toPath = to.replace(/\.(scss|less)$/g, '.wxss');
-  let toFileHash;
+  const tempPath = path.resolve(hash.hashFileDir, encodeURIComponent(toPath));
+  let toFileHash = '';
+  let tempFileHash = '';
 
   if (fse.existsSync(toPath)) {
     toFileHash = await hasha.fromFile(toPath, { algorithm: 'md5' });
   }
+  if (fse.existsSync(tempPath)) {
+    tempFileHash = await hasha.fromFile(tempPath, { algorithm: 'md5' });
+  }
 
-  if (hash.get(from) === fileHash && toFileHash && toFileHash === hash.get(toPath)) {
-    return false;
+  if (hash.get(from) === fromFileHash) {
+    // 完全匹配就直接返回
+    if (toFileHash === hash.get(toPath)) {
+      return false;
+    }
+    if (tempFileHash) {
+      fse.copySync(tempPath, toPath);
+      return false;
+    }
   }
 
   if (/(\.scss)$/g.test(from)) {
@@ -38,6 +51,8 @@ module.exports = async (from, to) => {
 
   toFileHash = await hasha.fromFile(toPath, { algorithm: 'md5' });
 
-  hash.set(from, fileHash);
+  hash.set(from, fromFileHash);
   hash.set(toPath, toFileHash);
+
+  fse.copySync(toPath, tempPath);
 };
