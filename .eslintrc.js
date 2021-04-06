@@ -1,29 +1,18 @@
 module.exports = {
   env: {
     browser: true,
-    es2020: true,
+    commonjs: true,
+    es2021: true,
   },
-  extends: ['standard'],
+  extends: ['airbnb-base'],
   parserOptions: {
-    ecmaVersion: 11,
-    sourceType: 'module',
-  },
-  globals: {
-    requirePlugin: true,
-    App: true,
-    wx: true,
-    getApp: true,
-    Page: true,
+    ecmaVersion: 12,
   },
   rules: {
-    semi: ['error', 'always', { omitLastInOneLineBlock: true }],
-    'comma-dangle': ['error', 'always-multiline'],
-    eqeqeq: 0,
-    'spaced-comment': 0,
-    camelcase: 0,
-    'space-before-function-paren': [
-      'error',
-      { anonymous: 'always', named: 'never', asyncArrow: 'always' },
-    ],
+    'no-console': [0],
+    'arrow-body-style': [0],
+    'object-curly-newline': [0],
+    'operator-linebreak': [0],
+    'no-await-in-loop': [0],
   },
 };

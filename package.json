@@ -1,11 +1,11 @@
 {
   "name": "weapp-compiler",
-  "version": "0.0.41",
+  "version": "2.0.0",
   "description": "",
-  "main": "build/index.js",
+  "main": "index.js",
   "scripts": {
-    "build": "node ./build/index.js build",
-    "dev": "nodemon --inspect --watch build ./build/index.js dev"
+    "build": "node ./index.js build",
+    "dev": "nodemon --inspect --watch build ./index.js dev"
   },
   "repository": {
     "type": "git",
@@ -17,31 +17,37 @@
   "author": "youpinyao",
   "license": "ISC",
   "dependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/preset-env": "^7.11.5",
     "chalk": "^4.1.0",
-    "commander": "^6.2.1",
-    "dayjs": "^1.8.33",
-    "eslint": "^7.7.0",
-    "fs-extra": "^9.0.1",
-    "gulp": "^4.0.2",
-    "gulp-babel": "^8.0.0",
-    "gulp-less": "^4.0.1",
-    "gulp-sass": "^4.1.0",
+    "commander": "^7.2.0",
+    "copy-webpack-plugin": "^8.1.0",
+    "css-loader": "^5.2.0",
+    "file-loader": "^6.2.0",
+    "fs-extra": "^9.1.0",
     "hasha": "^5.2.2",
-    "progress": "^2.0.3",
-    "replace-basename": "^1.1.0",
-    "throttle-debounce": "^3.0.1",
-    "watch": "^1.0.2"
+    "html-webpack-plugin": "^5.3.1",
+    "htmlparser2": "^6.0.1",
+    "less": "^4.1.1",
+    "less-loader": "^8.0.0",
+    "loader-utils": "^2.0.0",
+    "mini-css-extract-plugin": "^1.3.9",
+    "postcss-loader": "^5.2.0",
+    "postcss-preset-env": "^6.7.0",
+    "style-loader": "^2.0.0",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.28.0",
+    "webpack-bundle-analyzer": "^4.4.0",
+    "webpack-merge": "^5.7.3"
   },
   "devDependencies": {
-    "@vant/weapp": "^1.5.1",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "nodemon": "^2.0.4",
-    "sr-sdk-wxapp": "^1.3.12"
+    "@vant/weapp": "^1.6.8",
+    "dayjs": "^1.10.4",
+    "eslint": "^7.22.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "nodemon": "^2.0.7",
+    "qs": "^6.10.1",
+    "sr-sdk-wxapp": "^1.3.23",
+    "webpack-cli": "^4.5.0",
+    "wxbarcode": "^1.0.2"
   }
 }

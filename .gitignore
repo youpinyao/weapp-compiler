@@ -1,5 +1,4 @@
 node_modules
 dist
-.weapp.json
 src
-.weapp
+.weapp.js
