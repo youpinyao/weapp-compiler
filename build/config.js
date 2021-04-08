@@ -20,7 +20,6 @@ const alias = {
 Object.keys(projectConfig.alias || {}).forEach((key) => {
   alias[`alias(${key})`] = alias[key];
 });
-
 module.exports = {
   entry,
   output: path.resolve(process.cwd(), 'dist'),
@@ -78,7 +77,7 @@ module.exports = {
 
     // tabbar
     if (fse.existsSync(path.resolve(entry, 'custom-tab-bar/index.js'))) {
-      entrys['custom-tab-bar/index'] = path.resolve(entry, 'custom-tab-bar/index.js');
+      entrys['custom-tab-bar/index'] = path.resolve(entry, 'custom-tab-bar/index');
     }
 
     // subpackages
@@ -95,7 +94,7 @@ module.exports = {
       }
     });
 
-    // fse.writeJSONSync(path.resolve(process.cwd(), 'entrys.json'), entrys);
+    fse.writeJSONSync(path.resolve(process.cwd(), 'entrys.json'), entrys);
     return entrys;
   })(),
 };

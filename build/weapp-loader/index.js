@@ -3,7 +3,7 @@ const htmlparser2 = require('htmlparser2');
 const fse = require('fs-extra');
 // const chalk = require('chalk');
 
-const { entrys, entry, output } = require('../config');
+const { entrys, entry } = require('../config');
 
 function resolvePath(file, dir) {
   return new Promise((resolve, reject) => {
@@ -46,7 +46,7 @@ function importWxmlResource(file, isWxml = false) {
       },
       onend: async () => {
         const assets = allAtrrs
-          .filter((item) => /\.(png|svg|jpg|gif|jpeg)$/g.test(item))
+          .filter((item) => /\.(png|svg|jpg|gif|jpeg)$/g.test(item.split('?')[0]))
           .filter((item) => !/^(http:|https:)/.test(item));
         const wxmls = allAtrrs
           .filter((item) => /\.(wxs|wxml)$/g.test(item))
@@ -118,6 +118,10 @@ module.exports = async function loader(source) {
     Object.values(entrys).indexOf(path.resolve(fileInfo.dir, fileInfo.name)) !== -1
   ) {
     const exts = ['.less', '.wxss', '.css', '.json', '.wxml'];
+
+    // if (fileInfo.name === 'app') {
+    //   imports += 'import "regenerator-runtime/runtime";\n';
+    // }
 
     for (let index = 0; index < exts.length; index += 1) {
       const ext = exts[index];

@@ -5,7 +5,8 @@ module.exports = (opts) => {
   const compiler = webpack(
     webpackConfig({
       mode: 'development',
-      devtool: 'source-map',
+      // devtool: 'source-map',
+      devtool: 'hidden-source-map',
     }, opts || {}),
   );
 

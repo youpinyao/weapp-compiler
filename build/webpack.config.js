@@ -163,6 +163,27 @@ module.exports = (options, { analyzer } = {}) => {
             ],
           },
           {
+            test: /\.m?js$/,
+            // exclude: /node_modules/,
+            use: {
+              loader: 'babel-loader',
+              options: {
+                presets: [
+                  [
+                    '@babel/preset-env',
+                    {
+                      targets: 'defaults',
+                      modules: 'commonjs',
+                    },
+                  ],
+                ],
+                plugins: [
+                  '@babel/plugin-transform-runtime',
+                ],
+              },
+            },
+          },
+          {
             test: /\.(js)$/i,
             use: [
               {
