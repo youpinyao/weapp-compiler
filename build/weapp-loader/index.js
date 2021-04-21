@@ -21,7 +21,7 @@ function resolvePath(file, dir) {
   });
 }
 
-function importWxmlResource(file, isWxml = false) {
+function getWxmlResource(file) {
   return new Promise((resolve, reject) => {
     if (!fse.existsSync(file)) {
       resolve([]);
@@ -53,28 +53,27 @@ function importWxmlResource(file, isWxml = false) {
           .filter((item) => !/^(http:|https:)/.test(item));
 
         const imports = [];
+        const wxmlsImports = [];
 
-        if (isWxml) {
-          for (let index = 0; index < wxmls.length; index += 1) {
-            const attr = wxmls[index];
-            const result = await resolvePath.bind(this)(attr, path.parse(file).dir);
+        for (let index = 0; index < wxmls.length; index += 1) {
+          const attr = wxmls[index];
+          const result = await resolvePath.bind(this)(attr, path.parse(file).dir);
 
-            if (result) {
-              imports.push([attr, result]);
-            }
-          }
-        } else {
-          for (let index = 0; index < assets.length; index += 1) {
-            const attr = assets[index];
-            const result = await resolvePath.bind(this)(attr, path.parse(file).dir);
-
-            if (result) {
-              imports.push([attr, result]);
-            }
+          if (result) {
+            wxmlsImports.push([attr, result]);
           }
         }
 
-        resolve(imports);
+        for (let index = 0; index < assets.length; index += 1) {
+          const attr = assets[index];
+          const result = await resolvePath.bind(this)(attr, path.parse(file).dir);
+
+          if (result) {
+            imports.push([attr, result]);
+          }
+        }
+
+        resolve([imports, wxmlsImports]);
       },
     });
     parser.write(fse.readFileSync(file).toString());
@@ -91,7 +90,10 @@ function loadModule(file) {
   return new Promise((resolve, reject) => {
     this.loadModule(file, (err, src) => {
       if (err) {
-        this.emitError(err);
+        // console.log();
+        // console.log(file, this.resourcePath);
+        // console.log();
+        // this.emitError(err);
       }
       resolve(src);
     });
@@ -119,10 +121,6 @@ module.exports = async function loader(source) {
   ) {
     const exts = ['.less', '.wxss', '.css', '.json', '.wxml'];
 
-    // if (fileInfo.name === 'app') {
-    //   imports += 'import "regenerator-runtime/runtime";\n';
-    // }
-
     for (let index = 0; index < exts.length; index += 1) {
       const ext = exts[index];
       const otherFilePath = path.resolve(fileInfo.dir, fileInfo.name + ext);
@@ -134,9 +132,12 @@ module.exports = async function loader(source) {
     }
   }
   if (fileInfo.ext === '.wxml') {
-    // 资源文件
-    const assets = await importWxmlResource.bind(this)(filePath);
+    const [assets, wxmls] = await getWxmlResource.bind(this)(filePath);
 
+    // console.log(filePath);
+    // console.log(assets, wxmls);
+
+    // 资源文件
     for (let index = 0; index < assets.length; index += 1) {
       const [attr, file] = assets[index];
       const src = await loadModule.bind(this)(file);
@@ -144,9 +145,7 @@ module.exports = async function loader(source) {
       sourceStr = sourceStr.replace(attr, withPublicPath(src, publicPath));
     }
 
-    // wxml
-    const wxmls = await importWxmlResource.bind(this)(filePath, true);
-
+    // wxml文件
     for (let index = 0; index < wxmls.length; index += 1) {
       const [, file] = wxmls[index];
 

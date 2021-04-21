@@ -51,6 +51,7 @@ module.exports = {
           }
 
           if (fse.existsSync(`${filePath}.json`)) {
+            // eslint-disable-next-line
             readUsingComponents(`${filePath}.json`);
           }
 

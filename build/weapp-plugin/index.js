@@ -1,4 +1,90 @@
+const path = require('path');
 const { Compilation } = require('webpack');
+const { withWindows } = require('huawei-obs-sync/src/config');
+const ObsClient = require('esdk-obs-nodejs');
+const chalk = require('chalk');
+const { output, obsConfig, publicPath } = require('../config');
+
+const client = new ObsClient({
+  ...obsConfig,
+});
+const uploadQueue = {};
+
+function doUpload(file) {
+  return new Promise((resolve, reject) => {
+    client.putObject(
+      {
+        Bucket: obsConfig.bucket,
+        Key: withWindows(path.join(obsConfig.dir, path.relative(output, file))),
+        SourceFile: file,
+      },
+      (err, result) => {
+        if (err) {
+          reject(err);
+          // console.log(chalk.red("上传失败"), file);
+        } else if (result.CommonMsg.Status >= 300) {
+          reject(err);
+          // console.log(chalk.red("上传失败"), file);
+        } else {
+          resolve(result);
+          // console.log(chalk.green("上传成功"), file);
+        }
+      },
+    );
+  });
+}
+async function getStat(file) {
+  return new Promise((resolve, reject) => {
+    client.getObjectMetadata(
+      {
+        Bucket: obsConfig.bucket,
+        Key: withWindows(path.join(obsConfig.dir, path.relative(output, file))),
+      },
+      (err, result) => {
+        if (err) {
+          reject(err);
+        } else if (result.CommonMsg.Status < 300) {
+          resolve(result);
+        } else {
+          reject(result);
+        }
+      },
+    );
+  });
+}
+
+async function checkUpload() {
+  const file = Object.entries(uploadQueue).filter((item) => item[1] === false)[0];
+
+  if (file) {
+    uploadQueue[file[0]] = 'uploading';
+    // console.log(chalk.yellow(file[0]));
+
+    try {
+      await getStat(file[0]);
+      console.log(chalk.blue(`${publicPath}${path.relative(output, file[0])}`));
+    } catch (error) {
+      await doUpload(file[0]);
+      console.log(chalk.green(`${publicPath}${path.relative(output, file[0])}`));
+    }
+    uploadQueue[file[0]] = 'completed';
+    checkUpload();
+  }
+}
+function addToUploadQueue(assets) {
+  if (!obsConfig) {
+    console.warn('请配置obsConfig，否则无法上传obs');
+    return;
+  }
+
+  assets.forEach((asset) => {
+    const file = path.resolve(output, asset);
+    if (uploadQueue[file] === undefined) {
+      uploadQueue[file] = false;
+    }
+  });
+  checkUpload();
+}
 
 class WeappPlugin {
   // eslint-disable-next-line
@@ -8,7 +94,27 @@ class WeappPlugin {
   apply(compiler) {
     // const { RawSource } = compiler.webpack.sources;
 
+    let obsAssets = [];
+
+    compiler.hooks.done.tap('WeappPlugin', () => {
+      addToUploadQueue([...obsAssets]);
+      obsAssets = [];
+    });
+
     compiler.hooks.compilation.tap('WeappPlugin', (compilation) => {
+      compilation.hooks.afterProcessAssets.tap(
+        {
+          name: 'WeappPlugin',
+        },
+        (assets) => {
+          obsAssets = obsAssets.concat(
+            Object.keys(assets).filter((key) => {
+              return /\.(png|jpg|gif|jpeg|svg|ttf|woff|eot|woff2|otf)$/i.test(key);
+            }),
+          );
+        },
+      );
+
       compilation.hooks.processAssets.tap(
         {
           name: 'WeappPlugin',
@@ -32,13 +138,25 @@ class WeappPlugin {
             })
             .forEach((asset) => {
               const isJs = /(\.(js))$/g.test(asset.name);
-              const source =
-                asset.source._source && asset.source._source._children
-                  ? asset.source._source._children[0]
-                  : asset.source;
+              let { source } = asset;
+
+              // eslint-disable-next-line
+              if (asset.source._source && asset.source._source._children) {
+                // eslint-disable-next-line
+                source = asset.source._source._children.filter(
+                  (item) => typeof item !== 'string',
+                )[0];
+              }
+              // eslint-disable-next-line
+              if (asset.source._children) {
+                // eslint-disable-next-line
+                source = asset.source._children.filter((item) => typeof item !== 'string')[0];
+              }
 
               // eslint-disable-next-line
               let content = source._value || source._valueAsString;
+
+              // console.log('content', content, source);
 
               if (isJs) {
                 content = content.replace(

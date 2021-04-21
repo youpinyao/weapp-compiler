@@ -9,8 +9,11 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { alias, output, entrys, entry, publicPath = 'auto' } = require('./config');
 const WeappPlugin = require('./weapp-plugin');
 
+const copyFiles = ['project.config.json', 'sitemap.json'];
+
 module.exports = (options, { analyzer } = {}) => {
   const patterns = [];
+  // eslint-disable-next-line
   const weappAssetsName = (resourcePath, resourceQuery) => {
     if (/\/node_modules\//g.test(resourcePath)) {
       return path.relative(path.resolve(process.cwd(), 'node_modules'), resourcePath);
@@ -37,18 +40,14 @@ module.exports = (options, { analyzer } = {}) => {
     new WeappPlugin(),
   ];
 
-  if (fse.existsSync(path.resolve(entry, 'project.config.json'))) {
-    patterns.push({
-      from: path.resolve(entry, 'project.config.json'),
-      to: path.resolve(output, 'project.config.json'),
-    });
-  }
-  if (fse.existsSync(path.resolve(entry, 'sitemap.json'))) {
-    patterns.push({
-      from: path.resolve(entry, 'sitemap.json'),
-      to: path.resolve(output, 'sitemap.json'),
-    });
-  }
+  copyFiles.forEach((file) => {
+    if (fse.existsSync(path.resolve(entry, file))) {
+      patterns.push({
+        from: path.resolve(entry, file),
+        to: path.resolve(output, file),
+      });
+    }
+  });
 
   plugins.push(
     new CopyPlugin({
@@ -88,6 +87,7 @@ module.exports = (options, { analyzer } = {}) => {
                 loader: 'url-loader',
                 options: {
                   limit: 0,
+                  esModule: false,
                   fallback: {
                     loader: 'file-loader',
                     options: {
@@ -177,9 +177,7 @@ module.exports = (options, { analyzer } = {}) => {
                     },
                   ],
                 ],
-                plugins: [
-                  '@babel/plugin-transform-runtime',
-                ],
+                plugins: ['@babel/plugin-transform-runtime'],
               },
             },
           },
