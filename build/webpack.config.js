@@ -6,10 +6,29 @@ const CopyPlugin = require('copy-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const { alias, output, entrys, entry, publicPath = 'auto' } = require('./config');
+const {
+  alias,
+  output,
+  entrys,
+  entry,
+  publicPath = 'auto',
+  copyFiles = [],
+  assets,
+  app,
+  isSubpackage,
+} = require('./config');
 const WeappPlugin = require('./weapp-plugin');
 
-const copyFiles = ['project.config.json', 'sitemap.json'];
+const defaultCopyFiles = ['project.config.json', 'sitemap.json'];
+
+// 删除output目录文件
+if (fse.existsSync(output)) {
+  const files = fse.readdirSync(output);
+
+  files.forEach((item) => {
+    fse.removeSync(path.resolve(output, item));
+  });
+}
 
 module.exports = (options, { analyzer } = {}) => {
   const patterns = [];
@@ -23,6 +42,10 @@ module.exports = (options, { analyzer } = {}) => {
   const plugins = [
     new MiniCssExtractPlugin({
       filename: '[name].wxss',
+      // filename(asset) {
+      //   console.log(asset.chunk.name);
+      //   return '[name].wxss';
+      // },
     }),
     new webpack.ProgressPlugin({
       activeModules: false,
@@ -40,13 +63,66 @@ module.exports = (options, { analyzer } = {}) => {
     new WeappPlugin(),
   ];
 
-  copyFiles.forEach((file) => {
+  // chunk
+  const cacheGroups = {
+    vendors: {
+      minChunks: 1,
+      test: /\/node_modules\//,
+      name: 'vendors',
+      reuseExistingChunk: true,
+    },
+    commons: {
+      minChunks: 2,
+      // test: /^((?!.*(\/node_modules\/)).)*$/,
+      test(module) {
+        const resource = module.resource || module.context;
+        if (!resource) {
+          return false;
+        }
+        if (/\/node_modules\//.test(resource)) {
+          return false;
+        }
+        if (isSubpackage(path.relative(entry, resource))) {
+          return false;
+        }
+        return true;
+      },
+      name: 'commons',
+      reuseExistingChunk: true,
+    },
+  };
+  (app.subpackages || []).forEach((pkg) => {
+    const name = path.join(pkg.root, 'subpackage_common');
+    cacheGroups[name] = {
+      name,
+      test(module) {
+        const resource = module.resource || module.context;
+        if (!resource) {
+          return false;
+        }
+        if (/\/node_modules\//.test(resource)) {
+          return false;
+        }
+        return path.relative(entry, resource).startsWith(pkg.root);
+      },
+      minChunks: 2,
+      reuseExistingChunk: true,
+    };
+  });
+
+  defaultCopyFiles.forEach((file) => {
     if (fse.existsSync(path.resolve(entry, file))) {
       patterns.push({
         from: path.resolve(entry, file),
         to: path.resolve(output, file),
       });
     }
+  });
+  copyFiles.forEach((file) => {
+    patterns.push({
+      from: path.resolve(entry, file.from),
+      to: path.resolve(output, file.to),
+    });
   });
 
   plugins.push(
@@ -91,7 +167,7 @@ module.exports = (options, { analyzer } = {}) => {
                   fallback: {
                     loader: 'file-loader',
                     options: {
-                      name: 'assets/[name].[hash].[ext]',
+                      name: `${assets}/[name].[hash].[ext]`,
                     },
                   },
                 },
@@ -194,20 +270,11 @@ module.exports = (options, { analyzer } = {}) => {
       optimization: {
         splitChunks: {
           chunks: 'all',
-          cacheGroups: {
-            vendors: {
-              minChunks: 1,
-              test: /\/node_modules\//,
-              name: 'vendors',
-              reuseExistingChunk: true,
-            },
-            commons: {
-              minChunks: 2,
-              test: /^((?!.*(\/node_modules\/)).)*$/,
-              name: 'commons',
-              reuseExistingChunk: true,
-            },
-          },
+          // chunks(chunk) {
+          //   if (isSubpackage(chunk.name)) return false;
+          //   return true;
+          // },
+          cacheGroups,
         },
       },
     },

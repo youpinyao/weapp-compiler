@@ -26,6 +26,16 @@ module.exports = {
   ...projectConfig,
   alias,
   app: appConfig,
+  assets: 'assets',
+  isSubpackage(file) {
+    let isSub = false;
+    (appConfig.subpackages || []).forEach((pkg) => {
+      if (file.indexOf(pkg.root) === 0) {
+        isSub = true;
+      }
+    });
+    return isSub;
+  },
   entrys: (() => {
     const entrys = {
       app: path.resolve(entry, 'app'),

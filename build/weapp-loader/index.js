@@ -152,33 +152,36 @@ module.exports = async function loader(source) {
       loadModule.bind(this)(file);
     }
   }
-  if (fileInfo.ext === '.json' && filePath === path.resolve(entry, 'app.json')) {
-    const appConfig = JSON.parse(sourceStr);
 
-    if (appConfig.tabBar && appConfig.tabBar.list) {
-      for (let i = 0; i < appConfig.tabBar.list.length; i += 1) {
-        const item = appConfig.tabBar.list[i];
-        let { iconPath, selectedIconPath } = item;
+  // tabBar 不支持网络图片，处理
 
-        iconPath = path.resolve(entry, iconPath);
-        selectedIconPath = path.resolve(entry, selectedIconPath);
+  // if (fileInfo.ext === '.json' && filePath === path.resolve(entry, 'app.json')) {
+  //   const appConfig = JSON.parse(sourceStr);
 
-        if (iconPath) {
-          appConfig.tabBar.list[i].iconPath = withPublicPath(
-            await loadModule.bind(this)(iconPath),
-            'auto',
-          );
-        }
-        if (selectedIconPath) {
-          appConfig.tabBar.list[i].selectedIconPath = withPublicPath(
-            await loadModule.bind(this)(selectedIconPath),
-            'auto',
-          );
-        }
-      }
-    }
-    sourceStr = JSON.stringify(appConfig, null, 2);
-  }
+  //   if (appConfig.tabBar && appConfig.tabBar.list) {
+  //     for (let i = 0; i < appConfig.tabBar.list.length; i += 1) {
+  //       const item = appConfig.tabBar.list[i];
+  //       let { iconPath, selectedIconPath } = item;
+
+  //       iconPath = path.resolve(entry, iconPath);
+  //       selectedIconPath = path.resolve(entry, selectedIconPath);
+
+  //       if (iconPath) {
+  //         appConfig.tabBar.list[i].iconPath = withPublicPath(
+  //           await loadModule.bind(this)(iconPath),
+  //           'auto',
+  //         );
+  //       }
+  //       if (selectedIconPath) {
+  //         appConfig.tabBar.list[i].selectedIconPath = withPublicPath(
+  //           await loadModule.bind(this)(selectedIconPath),
+  //           'auto',
+  //         );
+  //       }
+  //     }
+  //   }
+  //   sourceStr = JSON.stringify(appConfig, null, 2);
+  // }
 
   if (fileInfo.ext === '.wxs') {
     const requires = sourceStr.match(/require\(("|').*("|')\)/g);
