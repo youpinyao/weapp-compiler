@@ -88,7 +88,7 @@ function addToUploadQueue(assets) {
       uploadQueue[file] = false;
     }
   });
-  // checkUpload();
+  checkUpload();
 }
 
 class WeappPlugin {
@@ -215,7 +215,7 @@ class WeappPlugin {
               );
               // content = content.replace('/******/ (() => { // webpackBootstrap', '');
               // content = content.replace('/******/ })()\n;', '');
-              if (!/^(var self = global;)/g.test(content)) {
+              if (!/(var self = global;)/g.test(content)) {
                 content = `var self = global; \n${content}`;
               }
             }
@@ -247,14 +247,14 @@ class WeappPlugin {
                 if (
                   res.js &&
                   /(\.js)$/g.test(asset.name) &&
-                  !/'subpackage_common\.js'\)/g.test(content)
+                  !/'subpackage_common\.js'\);/g.test(content)
                 ) {
                   content = `require('${path.relative(path.parse(asset.name).dir, res.js)}');\n${content}`;
                 }
                 if (
                   res.wxss &&
                   /(\.wxss)$/g.test(asset.name) &&
-                  !/'subpackage_common\.wxss'/g.test(content)
+                  !/'subpackage_common\.wxss';/g.test(content)
                 ) {
                   content = `@import '${path.relative(path.parse(asset.name).dir, res.wxss)}';\n${content}`;
                 }

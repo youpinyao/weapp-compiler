@@ -30,7 +30,13 @@ module.exports = {
   isSubpackage(file) {
     let isSub = false;
     (appConfig.subpackages || []).forEach((pkg) => {
-      if (file.indexOf(pkg.root) === 0) {
+      let { root } = pkg;
+
+      if (!/\/$/g.test(root)) {
+        root = `${root}/`;
+      }
+
+      if (file.indexOf(root) === 0 || file.indexOf(root.replace(/\//g, '\\')) === 0) {
         isSub = true;
       }
     });

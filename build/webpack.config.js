@@ -75,13 +75,20 @@ module.exports = (options, { analyzer } = {}) => {
       minChunks: 2,
       // test: /^((?!.*(\/node_modules\/)).)*$/,
       test(module) {
-        const resource = module.resource || module.context;
+        // eslint-disable-next-line
+        let resource = module.resource || module._identifier;
+
+        resource = resource.split('!');
+        resource = resource[resource.length - 1];
+
         if (!resource) {
           return false;
         }
+
         if (/\/node_modules\//.test(resource)) {
           return false;
         }
+
         if (isSubpackage(path.relative(entry, resource))) {
           return false;
         }
@@ -96,14 +103,27 @@ module.exports = (options, { analyzer } = {}) => {
     cacheGroups[name] = {
       name,
       test(module) {
-        const resource = module.resource || module.context;
+        let { root } = pkg;
+        // eslint-disable-next-line
+        let resource = module.resource || module._identifier;
+
+        resource = resource.split('!');
+        resource = resource[resource.length - 1];
+
         if (!resource) {
           return false;
         }
+        if (!/\/$/g.test(root)) {
+          root = `${root}/`;
+        }
+
         if (/\/node_modules\//.test(resource)) {
           return false;
         }
-        return path.relative(entry, resource).startsWith(pkg.root);
+        return (
+          path.relative(entry, resource).indexOf(root) === 0 ||
+          path.relative(entry, resource).indexOf(root.replace(/\//g, '\\')) === 0
+        );
       },
       minChunks: 2,
       reuseExistingChunk: true,
@@ -269,11 +289,8 @@ module.exports = (options, { analyzer } = {}) => {
       },
       optimization: {
         splitChunks: {
+          minSize: 0,
           chunks: 'all',
-          // chunks(chunk) {
-          //   if (isSubpackage(chunk.name)) return false;
-          //   return true;
-          // },
           cacheGroups,
         },
       },
