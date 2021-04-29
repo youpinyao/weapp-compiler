@@ -47,8 +47,6 @@ module.exports = {
     dir: 'weapp-compiler-test',
   },
 };
-
-
   `),
   );
 }
