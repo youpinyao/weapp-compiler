@@ -12,7 +12,7 @@
     "url": "https://github.com/youpinyao/weapp-compiler.git"
   },
   "bin": {
-    "weapp": "build/index.js"
+    "weapp": "index.js"
   },
   "author": "youpinyao",
   "license": "ISC",

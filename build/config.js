@@ -150,7 +150,7 @@ module.exports = {
       }
     });
 
-    fse.writeJSONSync(path.resolve(process.cwd(), 'entrys.json'), entrys);
+    // fse.writeJSONSync(path.resolve(process.cwd(), 'entrys.json'), entrys);
     return entrys;
   })(),
 };
