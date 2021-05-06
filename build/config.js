@@ -58,9 +58,9 @@ Object.keys(projectConfig.alias || {}).forEach((key) => {
   alias[`alias(${key})`] = alias[key];
 });
 module.exports = {
+  ...projectConfig,
   entry,
   output: path.resolve(process.cwd(), 'dist'),
-  ...projectConfig,
   alias,
   app: appConfig,
   assets: 'assets',
