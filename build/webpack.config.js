@@ -78,12 +78,12 @@ module.exports = (options, { analyzer } = {}) => {
         // eslint-disable-next-line
         let resource = module.resource || module._identifier;
 
-        resource = resource.split('!');
-        resource = resource[resource.length - 1];
-
         if (!resource) {
           return false;
         }
+
+        resource = resource.split('!');
+        resource = resource[resource.length - 1];
 
         if (/\/node_modules\//.test(resource)) {
           return false;
@@ -107,12 +107,12 @@ module.exports = (options, { analyzer } = {}) => {
         // eslint-disable-next-line
         let resource = module.resource || module._identifier;
 
-        resource = resource.split('!');
-        resource = resource[resource.length - 1];
-
         if (!resource) {
           return false;
         }
+        resource = resource.split('!');
+        resource = resource[resource.length - 1];
+
         if (!/\/$/g.test(root)) {
           root = `${root}/`;
         }
@@ -154,6 +154,36 @@ module.exports = (options, { analyzer } = {}) => {
     }),
   );
 
+  const getCssLoader = ({ use = [] } = {}) => {
+    return [
+      {
+        loader: MiniCssExtractPlugin.loader,
+      },
+      {
+        loader: 'css-loader',
+        options: {
+          importLoaders: use.length + 1,
+        },
+      },
+      {
+        loader: 'postcss-loader',
+        options: {
+          postcssOptions: {
+            plugins: [
+              [
+                'postcss-preset-env',
+                {
+                  // Options
+                },
+              ],
+            ],
+          },
+        },
+      },
+      ...use,
+    ];
+  };
+
   if (analyzer) {
     plugins.push(new BundleAnalyzerPlugin());
   }
@@ -183,6 +213,7 @@ module.exports = (options, { analyzer } = {}) => {
                 loader: 'url-loader',
                 options: {
                   limit: 0,
+                  // true 需要 .default, false 不需要 .defualt
                   esModule: false,
                   fallback: {
                     loader: 'file-loader',
@@ -195,39 +226,33 @@ module.exports = (options, { analyzer } = {}) => {
             ],
           },
           {
-            test: /\.(wxss|css|less)$/i,
-            use: [
-              MiniCssExtractPlugin.loader,
-              {
-                loader: 'css-loader',
-              },
-              {
-                loader: 'postcss-loader',
-                options: {
-                  postcssOptions: {
-                    plugins: [
-                      [
-                        'postcss-preset-env',
-                        {
-                          // Options
-                        },
-                      ],
-                    ],
-                  },
-                },
-              },
-            ],
+            test: /\.(wxss|css)$/i,
+            include: /node_modules/,
+            use: [...getCssLoader()],
           },
           {
-            test: /\.less$/i,
-            loader: 'less-loader', // compiles Less to CSS
-            options: {
-              lessOptions() {
-                return {
-                  paths: [entry],
-                };
-              },
-            },
+            // test: /\.less$/i,
+            test: /\.(less|wxss|css)$/i,
+            exclude: /node_modules/,
+            use: [
+              ...getCssLoader({
+                use: [
+                  {
+                    loader: path.resolve(__dirname, 'weapp-loader'),
+                  },
+                  {
+                    loader: 'less-loader', // compiles Less to CSS
+                    options: {
+                      lessOptions() {
+                        return {
+                          paths: [entry],
+                        };
+                      },
+                    },
+                  },
+                ],
+              }),
+            ],
           },
           {
             test: /\.(json|wxs)$/i,
