@@ -37,8 +37,6 @@ module.exports = {
     '@obs': path.resolve(__dirname, 'src/wxs_fila'),
     '@obsjson': path.resolve(__dirname, 'src/wxs_fila/json'),
   },
-  // 是否打包wxss到公共模块
-  chunkWxss: true,
   // 资源公共路径
   publicPath: 'https://img.test.com/weapp-compiler-test/',
   // 要同步的目录
