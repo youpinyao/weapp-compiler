@@ -156,7 +156,7 @@ class WeappPlugin {
             if (hasCommonWxss === false && item.name === 'commons.wxss') {
               hasCommonWxss = true;
             }
-            if (hasVendorWxss === false && item.name === 'vendors.wxss') {
+            if (hasVendorWxss === false && item.name === 'vendors_wxss.wxss') {
               hasVendorWxss = true;
             }
             if (hasCommonJs === false && item.name === 'commons.js') {
@@ -235,8 +235,8 @@ class WeappPlugin {
               if (!/@import '\.\/commons\.wxss'/g.test(content) && hasCommonWxss) {
                 content = `@import './commons.wxss';\n${content}`;
               }
-              if (!/@import '\.\/vendors\.wxss'/g.test(content) && hasVendorWxss) {
-                content = `@import './vendors.wxss';\n${content}`;
+              if (!/@import '\.\/vendors_wxss\.wxss'/g.test(content) && hasVendorWxss) {
+                content = `@import './vendors_wxss.wxss';\n${content}`;
               }
             }
 

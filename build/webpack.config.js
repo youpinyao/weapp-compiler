@@ -67,8 +67,35 @@ module.exports = (options, { analyzer } = {}) => {
   const cacheGroups = {
     vendors: {
       minChunks: 1,
-      test: /\/node_modules\//,
+      // test: /\/node_modules\//,
+      test(module) {
+        // eslint-disable-next-line
+        let resource = module.resource || module._identifier;
+
+        if (!resource) {
+          return false;
+        }
+
+        resource = resource.split('!');
+        resource = resource[resource.length - 1];
+
+        if (/\.wxss/g.test(resource)) {
+          return false;
+        }
+
+        if (/\/node_modules\//.test(resource)) {
+          return true;
+        }
+
+        return false;
+      },
       name: 'vendors',
+      reuseExistingChunk: true,
+    },
+    vendors_wxss: {
+      minChunks: 2,
+      test: /\/node_modules\//,
+      name: 'vendors_wxss',
       reuseExistingChunk: true,
     },
     commons: {
