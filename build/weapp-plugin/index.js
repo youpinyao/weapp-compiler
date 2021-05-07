@@ -1,5 +1,5 @@
 const path = require('path');
-const { Compilation } = require('webpack');
+const { RawSource } = require('webpack-sources');
 const { withWindows } = require('huawei-obs-sync/src/config');
 const ObsClient = require('esdk-obs-nodejs');
 const chalk = require('chalk');
@@ -127,11 +127,11 @@ class WeappPlugin {
         },
       );
 
-      compilation.hooks.processAssets.tap(
+      compilation.hooks.optimizeAssets.tap(
         {
           name: 'WeappPlugin',
-          stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_INLINE,
-          additionalAssets: true,
+          // stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_INLINE,
+          // additionalAssets: true,
         },
         (assets) => {
           // this callback will run against assets added later by plugins.
@@ -185,23 +185,8 @@ class WeappPlugin {
 
           items.forEach((asset) => {
             const isJs = /(\.(js))$/g.test(asset.name);
-            let { source } = asset;
-
-            // eslint-disable-next-line
-            if (asset.source._source && asset.source._source._children) {
-              // eslint-disable-next-line
-              source = asset.source._source._children.filter((item) => typeof item !== 'string')[0];
-            }
-            // eslint-disable-next-line
-            if (asset.source._children) {
-              // eslint-disable-next-line
-              source = asset.source._children.filter((item) => typeof item !== 'string')[0];
-            }
-
-            // eslint-disable-next-line
-            let content = source._value || source._valueAsString;
-
-            // console.log('content', content, source);
+            const { source } = asset;
+            let content = source.source();
 
             if (isJs) {
               content = content.replace(
@@ -261,16 +246,7 @@ class WeappPlugin {
               }
             });
 
-            // eslint-disable-next-line
-            if (source._value) {
-              // eslint-disable-next-line
-              source._value = content;
-            } else {
-              // eslint-disable-next-line
-              source._valueAsString = content;
-            }
-
-            compilation.updateAsset(asset.name, asset.source);
+            compilation.updateAsset(asset.name, new RawSource(content));
           });
         },
       );
