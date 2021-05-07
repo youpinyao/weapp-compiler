@@ -1,4 +1,4 @@
-# weapp compiler with webpack
+# weapp compiler with webpack5
 
 ## 启动
 
