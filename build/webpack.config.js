@@ -34,7 +34,7 @@ module.exports = (options, { analyzer } = {}) => {
   const patterns = [];
   // eslint-disable-next-line
   const weappAssetsName = (resourcePath, resourceQuery) => {
-    if (/\/node_modules\//g.test(resourcePath)) {
+    if (/node_modules/g.test(resourcePath)) {
       return path.relative(path.resolve(process.cwd(), 'node_modules'), resourcePath);
     }
     return '[path][name].[ext]';
@@ -83,7 +83,7 @@ module.exports = (options, { analyzer } = {}) => {
           return false;
         }
 
-        if (/\/node_modules\//.test(resource)) {
+        if (/node_modules/.test(resource)) {
           return true;
         }
 
@@ -94,7 +94,7 @@ module.exports = (options, { analyzer } = {}) => {
     },
     vendors_wxss: {
       minChunks: 2,
-      test: /\/node_modules\//,
+      test: /node_modules/,
       name: 'vendors_wxss',
       reuseExistingChunk: true,
     },
@@ -112,7 +112,7 @@ module.exports = (options, { analyzer } = {}) => {
         resource = resource.split('!');
         resource = resource[resource.length - 1];
 
-        if (/\/node_modules\//.test(resource)) {
+        if (/node_modules/.test(resource)) {
           return false;
         }
 
@@ -144,7 +144,7 @@ module.exports = (options, { analyzer } = {}) => {
           root = `${root}/`;
         }
 
-        if (/\/node_modules\//.test(resource)) {
+        if (/node_modules/.test(resource)) {
           return false;
         }
         return (
@@ -264,9 +264,6 @@ module.exports = (options, { analyzer } = {}) => {
             use: [
               ...getCssLoader({
                 use: [
-                  {
-                    loader: path.resolve(__dirname, 'weapp-loader'),
-                  },
                   {
                     loader: 'less-loader', // compiles Less to CSS
                     options: {

@@ -2,6 +2,7 @@ const path = require('path');
 const fse = require('fs-extra');
 const chalk = require('chalk');
 const traverseDir = require('./traverseDir');
+const withWindows = require('./withWindows');
 
 const entry = path.resolve(process.cwd(), 'src');
 const weapp = path.resolve(process.cwd(), '.weapp.js');
@@ -108,11 +109,21 @@ module.exports = {
             readUsingComponents(`${filePath}.json`);
           }
 
-          entrys[
-            /\/node_modules\//g.test(filePath)
-              ? filePath.split('/node_modules/')[1]
-              : path.relative(entry, filePath)
-          ] = filePath;
+          let entryKey = filePath;
+
+          if (/\/node_modules\//g.test(filePath)) {
+            // eslint-disable-next-line
+            entryKey = filePath.split('/node_modules/')[1];
+          } else if (/\\node_modules\\/g.test(filePath)) {
+            // eslint-disable-next-line
+            entryKey = filePath.split('\\node_modules\\')[1];
+          } else {
+            entryKey = path.relative(entry, filePath);
+          }
+
+          entryKey = withWindows(entryKey);
+
+          entrys[entryKey] = filePath;
         }
       });
     };
@@ -137,7 +148,7 @@ module.exports = {
     // subpackages
     (appConfig.subpackages || []).forEach((pkg) => {
       (pkg.pages || []).forEach((page) => {
-        entrys[path.join(pkg.root, page)] = path.resolve(entry, pkg.root, page);
+        entrys[withWindows(path.join(pkg.root, page))] = path.resolve(entry, pkg.root, page);
       });
     });
 

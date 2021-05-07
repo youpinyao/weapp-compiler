@@ -1,9 +1,9 @@
 const path = require('path');
 const { RawSource } = require('webpack-sources');
-const { withWindows } = require('huawei-obs-sync/src/config');
 const ObsClient = require('esdk-obs-nodejs');
 const chalk = require('chalk');
 const { output, obsConfig, publicPath, assets: assetsDir } = require('../config');
+const withWindows = require('../withWindows');
 
 const client = new ObsClient({
   ...obsConfig,
@@ -64,10 +64,10 @@ async function checkUpload() {
         uploadQueue[file[0]] = 'uploading';
         try {
           await getStat(file[0]);
-          console.log(chalk.blue(`${publicPath}${path.relative(output, file[0])}`));
+          console.log(chalk.blue(withWindows(`${publicPath}${path.relative(output, file[0])}`)));
         } catch (error) {
           await doUpload(file[0]);
-          console.log(chalk.green(`${publicPath}${path.relative(output, file[0])}`));
+          console.log(chalk.green(withWindows(`${publicPath}${path.relative(output, file[0])}`)));
         }
         uploadQueue[file[0]] = 'completed';
       }),
@@ -228,20 +228,29 @@ class WeappPlugin {
             // 分包注入公共模块
             Object.keys(subpackages).forEach((subpackage) => {
               const res = subpackages[subpackage];
-              if (asset.name.startsWith(subpackage) && !/(subpackage_common\.(js|wxss))$/g.test(asset.name)) {
+              if (
+                asset.name.startsWith(subpackage) &&
+                !/(subpackage_common\.(js|wxss))$/g.test(asset.name)
+              ) {
                 if (
                   res.js &&
                   /(\.js)$/g.test(asset.name) &&
                   !/'subpackage_common\.js'\);/g.test(content)
                 ) {
-                  content = `require('${path.relative(path.parse(asset.name).dir, res.js)}');\n${content}`;
+                  content = `require('${path.relative(
+                    path.parse(asset.name).dir,
+                    res.js,
+                  )}');\n${content}`;
                 }
                 if (
                   res.wxss &&
                   /(\.wxss)$/g.test(asset.name) &&
                   !/'subpackage_common\.wxss';/g.test(content)
                 ) {
-                  content = `@import '${path.relative(path.parse(asset.name).dir, res.wxss)}';\n${content}`;
+                  content = `@import '${path.relative(
+                    path.parse(asset.name).dir,
+                    res.wxss,
+                  )}';\n${content}`;
                 }
               }
             });
