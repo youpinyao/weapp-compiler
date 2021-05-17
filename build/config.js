@@ -148,24 +148,24 @@ module.exports = {
       entrys[page] = path.resolve(entry, page);
     });
 
-    // // tabbar
-    // if (fse.existsSync(path.resolve(entry, 'custom-tab-bar/index.js'))) {
-    //   entrys['custom-tab-bar/index'] = path.resolve(entry, 'custom-tab-bar/index');
-    // }
+    // tabbar
+    if (fse.existsSync(path.resolve(entry, 'custom-tab-bar/index.js'))) {
+      entrys['custom-tab-bar/index'] = path.resolve(entry, 'custom-tab-bar/index');
+    }
 
-    // // subpackages
-    // (appConfig.subpackages || []).forEach((pkg) => {
-    //   (pkg.pages || []).forEach((page) => {
-    //     entrys[withWindows(path.join(pkg.root, page))] = path.resolve(entry, pkg.root, page);
-    //   });
-    // });
+    // subpackages
+    (appConfig.subpackages || []).forEach((pkg) => {
+      (pkg.pages || []).forEach((page) => {
+        entrys[withWindows(path.join(pkg.root, page))] = path.resolve(entry, pkg.root, page);
+      });
+    });
 
-    // // usingComponents
-    // traverseDir(entry).forEach((item) => {
-    //   if (/(\.json)$/g.test(item)) {
-    //     readUsingComponents(item);
-    //   }
-    // });
+    // usingComponents
+    traverseDir(entry).forEach((item) => {
+      if (/(\.json)$/g.test(item)) {
+        readUsingComponents(item);
+      }
+    });
 
     // fse.writeJSONSync(path.resolve(process.cwd(), 'entrys.json'), entrys);
     return entrys;
