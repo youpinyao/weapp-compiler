@@ -52,6 +52,14 @@ module.exports = {
     bucket: 'XXXXXXXX',
     dir: 'weapp-compiler-test',
   },
+  // 阿里OSS配置
+  ossConfig: {
+    region: '<Your region>',
+    accessKeyId: '<Your AccessKeyId>',
+    accessKeySecret: '<Your AccessKeySecret>',
+    bucket: '<Your Bucket>',
+    dir: 'weapp-compiler-test',
+  },
 };
 ```
 
