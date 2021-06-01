@@ -2,6 +2,7 @@ const path = require('path');
 const { RawSource } = require('webpack-sources');
 const { assets: assetsDir } = require('../config');
 const { addToUploadQueue } = require('../upload');
+const withWindows = require('../withWindows');
 
 class WeappPlugin {
   // eslint-disable-next-line
@@ -80,23 +81,24 @@ class WeappPlugin {
             if (/subpackage_common/g.test(item.name)) {
               const pathInfo = path.parse(item.name);
 
-              if (!subpackages[pathInfo.dir]) {
-                subpackages[pathInfo.dir] = {
+              if (!subpackages[withWindows(pathInfo.dir)]) {
+                subpackages[withWindows(pathInfo.dir)] = {
                   js: '',
                   wxss: '',
                 };
               }
               if (/(\.js)$/g.test(item.name)) {
-                subpackages[pathInfo.dir].js = item.name;
+                subpackages[withWindows(pathInfo.dir)].js = withWindows(item.name);
               }
               if (/(\.wxss)$/g.test(item.name)) {
-                subpackages[pathInfo.dir].wxss = item.name;
+                subpackages[withWindows(pathInfo.dir)].wxss = withWindows(item.name);
               }
             }
           });
 
           items.forEach((asset) => {
-            const isJs = /(\.(js))$/g.test(asset.name);
+            const assetName = withWindows(asset.name);
+            const isJs = /(\.(js))$/g.test(assetName);
             const { source } = asset;
             let content = source.source();
 
@@ -118,7 +120,7 @@ class WeappPlugin {
             }
 
             // 注入公共模块
-            if (asset.name === 'app.js') {
+            if (assetName === 'app.js') {
               if (!/require('\.\/commons\.js')/g.test(content) && hasCommonJs) {
                 content = `require('./commons.js');\n${content}`;
               }
@@ -128,7 +130,7 @@ class WeappPlugin {
             }
 
             // 注入公共模块
-            if (asset.name === 'app.wxss') {
+            if (assetName === 'app.wxss') {
               if (!/@import '\.\/commons\.wxss'/g.test(content) && hasCommonWxss) {
                 content = `@import './commons.wxss';\n${content}`;
               }
@@ -140,28 +142,27 @@ class WeappPlugin {
             // 分包注入公共模块
             Object.keys(subpackages).forEach((subpackage) => {
               const res = subpackages[subpackage];
+
               if (
-                asset.name.startsWith(subpackage) &&
-                !/(subpackage_common\.(js|wxss))$/g.test(asset.name)
+                assetName.startsWith(subpackage) &&
+                !/(subpackage_common\.(js|wxss))$/g.test(assetName)
               ) {
                 if (
                   res.js &&
-                  /(\.js)$/g.test(asset.name) &&
+                  /(\.js)$/g.test(assetName) &&
                   !/'subpackage_common\.js'\);/g.test(content)
                 ) {
-                  content = `require('${path.relative(
-                    path.parse(asset.name).dir,
-                    res.js,
+                  content = `require('${withWindows(
+                    path.relative(path.parse(assetName).dir, res.js),
                   )}');\n${content}`;
                 }
                 if (
                   res.wxss &&
-                  /(\.wxss)$/g.test(asset.name) &&
+                  /(\.wxss)$/g.test(assetName) &&
                   !/'subpackage_common\.wxss';/g.test(content)
                 ) {
-                  content = `@import '${path.relative(
-                    path.parse(asset.name).dir,
-                    res.wxss,
+                  content = `@import '${withWindows(
+                    path.relative(path.parse(assetName).dir, res.wxss),
                   )}';\n${content}`;
                 }
               }
