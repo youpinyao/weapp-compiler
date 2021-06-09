@@ -82,7 +82,7 @@ module.exports = {
         root = `${root}/`;
       }
 
-      if (file.indexOf(root) === 0 || file.indexOf(root.replace(/\//g, '\\')) === 0) {
+      if (withWindows(file).indexOf(root) === 0) {
         isSub = true;
       }
     });

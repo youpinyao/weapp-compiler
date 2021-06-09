@@ -18,6 +18,7 @@ const {
   isSubpackage,
 } = require('./config');
 const WeappPlugin = require('./weapp-plugin');
+const withWindows = require('./withWindows');
 
 const defaultCopyFiles = ['project.config.json', 'sitemap.json'];
 
@@ -63,22 +64,31 @@ module.exports = (options, { analyzer } = {}) => {
     new WeappPlugin(),
   ];
 
+  const getResource = (module) => {
+    // eslint-disable-next-line
+    let resource = module.resource || module._identifier;
+
+    if (!resource) {
+      return false;
+    }
+
+    resource = resource.split('!');
+    resource = resource[resource.length - 1];
+
+    return resource;
+  };
+
   // chunk
   const cacheGroups = {
     vendors: {
       minChunks: 1,
       // test: /\/node_modules\//,
       test(module) {
-        // eslint-disable-next-line
-        let resource = module.resource || module._identifier;
+        const resource = getResource(module);
 
-        if (!resource) {
+        if (resource === false) {
           return false;
         }
-
-        resource = resource.split('!');
-        resource = resource[resource.length - 1];
-
         if (/\.wxss/g.test(resource)) {
           return false;
         }
@@ -102,16 +112,11 @@ module.exports = (options, { analyzer } = {}) => {
       minChunks: 2,
       // test: /^((?!.*(\/node_modules\/)).)*$/,
       test(module) {
-        // eslint-disable-next-line
-        let resource = module.resource || module._identifier;
+        const resource = getResource(module);
 
-        if (!resource) {
+        if (resource === false) {
           return false;
         }
-
-        resource = resource.split('!');
-        resource = resource[resource.length - 1];
-
         if (/node_modules/.test(resource)) {
           return false;
         }
@@ -126,20 +131,16 @@ module.exports = (options, { analyzer } = {}) => {
     },
   };
   (app.subpackages || []).forEach((pkg) => {
-    const name = path.join(pkg.root, 'subpackage_common');
+    let { root } = pkg;
+    const name = path.join(root, 'subpackage_common');
     cacheGroups[name] = {
       name,
       test(module) {
-        let { root } = pkg;
-        // eslint-disable-next-line
-        let resource = module.resource || module._identifier;
+        const resource = getResource(module);
 
-        if (!resource) {
+        if (resource === false) {
           return false;
         }
-        resource = resource.split('!');
-        resource = resource[resource.length - 1];
-
         if (!/\/$/g.test(root)) {
           root = `${root}/`;
         }
@@ -147,10 +148,7 @@ module.exports = (options, { analyzer } = {}) => {
         if (/node_modules/.test(resource)) {
           return false;
         }
-        return (
-          path.relative(entry, resource).indexOf(root) === 0 ||
-          path.relative(entry, resource).indexOf(root.replace(/\//g, '\\')) === 0
-        );
+        return withWindows(path.relative(entry, resource)).indexOf(root) === 0;
       },
       minChunks: 2,
       reuseExistingChunk: true,
