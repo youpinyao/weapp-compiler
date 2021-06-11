@@ -27,7 +27,9 @@ if (fse.existsSync(output)) {
   const files = fse.readdirSync(output);
 
   files.forEach((item) => {
-    fse.removeSync(path.resolve(output, item));
+    if (!/project\.config\.json/g.test(item)) {
+      fse.removeSync(path.resolve(output, item));
+    }
   });
 }
 
