@@ -112,6 +112,8 @@ class WeappPlugin {
                   var __webpack_module_cache__ = global.__webpack_module_cache__;
                   `,
               );
+              // sdk2.17.3 window 下没有 regeneratorRuntime
+              content = content.replace('Function("r", "regeneratorRuntime = r")(runtime);', 'global.regeneratorRuntime = runtime');
               // content = content.replace('/******/ (() => { // webpackBootstrap', '');
               // content = content.replace('/******/ })()\n;', '');
               if (!/(var self = global;)/g.test(content)) {
