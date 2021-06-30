@@ -102,7 +102,7 @@ class WeappPlugin {
             const { source } = asset;
             let content = source.source();
 
-            if (isJs) {
+            if (isJs && typeof content === 'string') {
               content = content.replace(
                 'var __webpack_module_cache__ = {};',
                 `
