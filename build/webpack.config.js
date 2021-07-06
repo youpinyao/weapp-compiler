@@ -234,7 +234,7 @@ module.exports = (options, { analyzer } = {}) => {
       module: {
         rules: [
           {
-            test: /\.(png|jpg|gif|jpeg|svg|ttf|woff|eot|woff2|otf)$/i,
+            test: /\.(png|jpg|gif|jpeg|svg|ttf|woff|eot|woff2|otf|mp3|mp4|wav)$/i,
             use: [
               {
                 loader: 'url-loader',
