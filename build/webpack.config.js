@@ -89,7 +89,7 @@ module.exports = (options, { analyzer } = {}) => {
         const resource = getResource(module);
 
         if (resource === false) {
-          return false;
+          return true;
         }
         if (/\.wxss/g.test(resource)) {
           return false;
