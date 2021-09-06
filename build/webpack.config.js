@@ -5,6 +5,7 @@ const fse = require('fs-extra');
 const CopyPlugin = require('copy-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const autoprefixer = require('autoprefixer');
 
 const {
   alias,
@@ -197,6 +198,7 @@ module.exports = (options, { analyzer } = {}) => {
         options: {
           postcssOptions: {
             plugins: [
+              autoprefixer,
               [
                 'postcss-preset-env',
                 {
