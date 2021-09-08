@@ -95,6 +95,22 @@ function doUpload(file) {
   return doObsUpload(file);
 }
 
+function getProgress() {
+  const completed =
+    Object.entries(uploadQueue).filter((item) => item[1] === 'completed').length + 1;
+  const total = Object.keys(uploadQueue).length;
+
+  if (completed === total) {
+    setTimeout(() => {
+      console.log(chalk.green('------------------------'));
+      console.log(chalk.green('assets upload completed'));
+      console.log(chalk.green('------------------------'));
+    }, 0);
+  }
+
+  return `[${completed}/${total}]`;
+}
+
 async function checkUpload() {
   const files = Object.entries(uploadQueue)
     .filter((item) => item[1] === false)
@@ -106,10 +122,14 @@ async function checkUpload() {
         uploadQueue[file[0]] = 'uploading';
         try {
           await getStat(file[0]);
-          console.log(chalk.blue(`${publicPath}${path.relative(output, file[0])}`));
+          console.log(
+            chalk.blue(`${publicPath}${path.relative(output, file[0])} ${getProgress()}`),
+          );
         } catch (error) {
           await doUpload(file[0]);
-          console.log(chalk.green(`${publicPath}${path.relative(output, file[0])}`));
+          console.log(
+            chalk.green(`${publicPath}${path.relative(output, file[0])} ${getProgress()}`),
+          );
         }
         uploadQueue[file[0]] = 'completed';
       }),
@@ -118,6 +138,7 @@ async function checkUpload() {
     checkUpload();
   }
 }
+
 function addToUploadQueue(assets) {
   if (!obsConfig && !ossConfig) {
     console.warn('请配置obsConfig 或 ossConfig，否则无法上传文件到obs 或 oss');
