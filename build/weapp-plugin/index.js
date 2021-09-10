@@ -1,6 +1,7 @@
 const path = require('path');
 const { RawSource } = require('webpack-sources');
 const { assets: assetsDir } = require('../config');
+const resourceAccept = require('../resourceAccept');
 const { addToUploadQueue } = require('../upload');
 const withWindows = require('../withWindows');
 
@@ -31,10 +32,7 @@ class WeappPlugin {
         (assets) => {
           obsAssets = obsAssets.concat(
             Object.keys(assets).filter((key) => {
-              return (
-                /\.(png|jpg|gif|jpeg|svg|ttf|woff|eot|woff2|otf|json|html)$/i.test(key) &&
-                new RegExp(`${assetsDir}/`, 'g').test(key)
-              );
+              return resourceAccept.test(key) && new RegExp(`${assetsDir}/`, 'g').test(key);
             }),
           );
         },
@@ -113,7 +111,10 @@ class WeappPlugin {
                   `,
               );
               // sdk2.17.3 window 下没有 regeneratorRuntime
-              content = content.replace('Function("r", "regeneratorRuntime = r")(runtime);', 'global.regeneratorRuntime = runtime');
+              content = content.replace(
+                'Function("r", "regeneratorRuntime = r")(runtime);',
+                'global.regeneratorRuntime = runtime',
+              );
               // content = content.replace('/******/ (() => { // webpackBootstrap', '');
               // content = content.replace('/******/ })()\n;', '');
               if (!/(var self = global;)/g.test(content)) {

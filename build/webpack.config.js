@@ -20,6 +20,7 @@ const {
 } = require('./config');
 const WeappPlugin = require('./weapp-plugin');
 const withWindows = require('./withWindows');
+const resourceAccept = require('./resourceAccept');
 
 const defaultCopyFiles = ['project.config.json', 'sitemap.json'];
 
@@ -236,7 +237,7 @@ module.exports = (options, { analyzer } = {}) => {
       module: {
         rules: [
           {
-            test: /\.(png|jpg|gif|jpeg|svg|ttf|woff|eot|woff2|otf|mp3|mp4|wav|json|html)$/i,
+            test: resourceAccept,
             use: [
               {
                 loader: 'url-loader',

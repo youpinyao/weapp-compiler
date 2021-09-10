@@ -4,6 +4,7 @@ const fse = require('fs-extra');
 // const chalk = require('chalk');
 
 const { entrys, entry } = require('../config');
+const resourceAccept = require('../resourceAccept');
 
 function resolvePath(file, dir) {
   return new Promise((resolve, reject) => {
@@ -46,7 +47,7 @@ function getWxmlResource(file) {
       },
       onend: async () => {
         const assets = allAtrrs
-          .filter((item) => /\.(png|svg|jpg|gif|jpeg)$/g.test(item.split('?')[0]))
+          .filter((item) => resourceAccept.test(item.split('?')[0]))
           .filter((item) => !/^(http:|https:)/.test(item));
         const wxmls = allAtrrs
           .filter((item) => /\.(wxs|wxml)$/g.test(item))
