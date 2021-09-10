@@ -32,7 +32,7 @@ class WeappPlugin {
           obsAssets = obsAssets.concat(
             Object.keys(assets).filter((key) => {
               return (
-                /\.(png|jpg|gif|jpeg|svg|ttf|woff|eot|woff2|otf)$/i.test(key) &&
+                /\.(png|jpg|gif|jpeg|svg|ttf|woff|eot|woff2|otf|json|html)$/i.test(key) &&
                 new RegExp(`${assetsDir}/`, 'g').test(key)
               );
             }),
