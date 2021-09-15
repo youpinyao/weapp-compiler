@@ -3,10 +3,12 @@ const path = require('path');
 const OBSClient = require('esdk-obs-nodejs');
 const OSSClient = require('ali-oss');
 const chalk = require('chalk');
-const { output, obsConfig, ossConfig, publicPath } = require('./config');
+const Progress = require('progress');
+const { output, obsConfig, ossConfig } = require('./config');
 
 let obsClient;
 let ossClient;
+let progress;
 const uploadQueue = {};
 
 function getObsClient() {
@@ -95,12 +97,22 @@ function doUpload(file) {
   return doObsUpload(file);
 }
 
-function getProgress() {
+function updateProgress() {
   const completed =
     Object.entries(uploadQueue).filter((item) => item[1] === 'completed').length + 1;
   const total = Object.keys(uploadQueue).length;
 
+  if (!progress) {
+    progress = new Progress('uploading assets [:bar] :current/:total', {
+      total,
+      width: 40,
+    });
+  }
+
+  progress.tick();
+
   if (completed === total) {
+    progress = null;
     setTimeout(() => {
       console.log(chalk.green('------------------------'));
       console.log(chalk.green('assets upload completed'));
@@ -122,14 +134,16 @@ async function checkUpload() {
         uploadQueue[file[0]] = 'uploading';
         try {
           await getStat(file[0]);
-          console.log(
-            chalk.blue(`${publicPath}${path.relative(output, file[0])} ${getProgress()}`),
-          );
+          updateProgress();
+          // console.log(
+          //   chalk.blue(`${publicPath}${path.relative(output, file[0])} ${updateProgress()}`),
+          // );
         } catch (error) {
           await doUpload(file[0]);
-          console.log(
-            chalk.green(`${publicPath}${path.relative(output, file[0])} ${getProgress()}`),
-          );
+          updateProgress();
+          // console.log(
+          //   chalk.green(`${publicPath}${path.relative(output, file[0])} ${updateProgress()}`),
+          // );
         }
         uploadQueue[file[0]] = 'completed';
       }),
