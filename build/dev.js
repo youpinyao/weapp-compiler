@@ -3,11 +3,13 @@ const webpackConfig = require('./webpack.config');
 
 module.exports = (opts) => {
   const compiler = webpack(
-    webpackConfig({
-      mode: 'development',
-      // devtool: 'source-map',
-      devtool: 'hidden-source-map',
-    }, opts || {}),
+    webpackConfig(
+      {
+        mode: 'development',
+        devtool: 'cheap-module-source-map',
+      },
+      opts || {},
+    ),
   );
 
   compiler.watch({}, (err, stats) => {

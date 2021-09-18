@@ -5,6 +5,8 @@ const resourceAccept = require('../resourceAccept');
 const { addToUploadQueue } = require('../upload');
 const withWindows = require('../withWindows');
 
+const pluginName = 'WeappCompilerPlugin';
+
 class WeappPlugin {
   // eslint-disable-next-line
   constructor() {}
@@ -14,20 +16,20 @@ class WeappPlugin {
     // const { RawSource } = compiler.webpack.sources;
 
     let obsAssets = [];
-    // compiler.hooks.shouldEmit.tap('WeappPlugin', () => {
+    // compiler.hooks.shouldEmit.tap(pluginName, () => {
     //   // return true to emit the output, otherwise false
     //   console.log('compiler.hooks.shouldEmit');
     //   return true;
     // });
-    compiler.hooks.done.tap('WeappPlugin', () => {
+    compiler.hooks.done.tap(pluginName, () => {
       addToUploadQueue([...obsAssets]);
       obsAssets = [];
     });
 
-    compiler.hooks.compilation.tap('WeappPlugin', (compilation) => {
+    compiler.hooks.compilation.tap(pluginName, (compilation) => {
       compilation.hooks.afterProcessAssets.tap(
         {
-          name: 'WeappPlugin',
+          name: pluginName,
         },
         (assets) => {
           obsAssets = obsAssets.concat(
@@ -40,11 +42,11 @@ class WeappPlugin {
 
       compilation.hooks.optimizeAssets.tap(
         {
-          name: 'WeappPlugin',
-          // stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_INLINE,
-          // additionalAssets: true,
+          name: pluginName,
+          stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_SIZE,
+          additionalAssets: true,
         },
-        (assets) => {
+        async (assets) => {
           // this callback will run against assets added later by plugins.
           const items = Object.entries(assets)
             .map(([name, source]) => {
@@ -63,7 +65,9 @@ class WeappPlugin {
           let hasVendorJs = false;
           const subpackages = {};
 
-          items.forEach((item) => {
+          for (let index = 0; index < items.length; index += 1) {
+            const item = items[index];
+
             if (hasCommonWxss === false && item.name === 'commons.wxss') {
               hasCommonWxss = true;
             }
@@ -92,9 +96,11 @@ class WeappPlugin {
                 subpackages[withWindows(pathInfo.dir)].wxss = withWindows(item.name);
               }
             }
-          });
+          }
 
-          items.forEach((asset) => {
+          for (let index = 0; index < items.length; index += 1) {
+            const asset = items[index];
+
             const assetName = withWindows(asset.name);
             const isJs = /(\.(js))$/g.test(assetName);
             const { source } = asset;
@@ -170,9 +176,8 @@ class WeappPlugin {
                 }
               }
             });
-
             compilation.updateAsset(asset.name, new RawSource(content));
-          });
+          }
         },
       );
     });

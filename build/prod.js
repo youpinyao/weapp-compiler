@@ -5,6 +5,7 @@ module.exports = (opts) => {
   const compiler = webpack(
     webpackConfig({
       mode: 'production',
+      devtool: 'cheap-module-source-map',
     }, opts || {}),
   );
 
