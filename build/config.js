@@ -8,6 +8,7 @@ const entry = path.resolve(process.cwd(), 'src');
 const weapp = path.resolve(process.cwd(), '.weapp.js');
 const appConfig = fse.readJSONSync(path.resolve(entry, 'app.json'));
 let projectConfig = {};
+let nodeModulesUsingComponent = [];
 
 if (fse.existsSync(weapp)) {
   // eslint-disable-next-line
@@ -73,6 +74,9 @@ module.exports = {
   alias,
   app: appConfig,
   assets: 'assets',
+  isNodeModulesUsingComponent(name) {
+    return nodeModulesUsingComponent.indexOf(name.replace(/\.(js|wxml|wxss|json|wxs)$/g, '')) !== -1;
+  },
   isSubpackage(file) {
     let isSub = false;
     (appConfig.subpackages || []).forEach((pkg) => {
@@ -89,6 +93,7 @@ module.exports = {
     return isSub;
   },
   entrys: (() => {
+    nodeModulesUsingComponent = [];
     const entrys = {
       app: path.resolve(entry, 'app'),
     };
@@ -119,12 +124,11 @@ module.exports = {
 
           let entryKey = filePath;
 
-          if (/\/node_modules\//g.test(filePath)) {
+          if (/\/node_modules\//g.test(filePath) || /\\node_modules\\/g.test(filePath)) {
             // eslint-disable-next-line
-            entryKey = filePath.split('/node_modules/')[1];
-          } else if (/\\node_modules\\/g.test(filePath)) {
-            // eslint-disable-next-line
-            entryKey = filePath.split('\\node_modules\\')[1];
+            entryKey = withWindows(filePath).split('/node_modules/')[1];
+
+            nodeModulesUsingComponent.push(entryKey);
           } else {
             entryKey = path.relative(entry, filePath);
           }

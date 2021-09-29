@@ -1,6 +1,7 @@
 const path = require('path');
+const { minify } = require('terser');
 const { RawSource } = require('webpack-sources');
-const { assets: assetsDir } = require('../config');
+const { assets: assetsDir, isNodeModulesUsingComponent } = require('../config');
 const resourceAccept = require('../resourceAccept');
 const { addToUploadQueue } = require('../upload');
 const withWindows = require('../withWindows');
@@ -40,11 +41,10 @@ class WeappPlugin {
         },
       );
 
-      compilation.hooks.optimizeAssets.tap(
+      compilation.hooks.processAssets.tap(
         {
           name: pluginName,
-          stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_SIZE,
-          additionalAssets: true,
+          stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONS,
         },
         async (assets) => {
           // this callback will run against assets added later by plugins.
@@ -106,7 +106,12 @@ class WeappPlugin {
             const { source } = asset;
             let content = source.source();
 
-            if (isJs && typeof content === 'string') {
+            if (content.toString) {
+              content = content.toString();
+            }
+
+            // 注入全局引用模块
+            if (isJs) {
               content = content.replace(
                 'var __webpack_module_cache__ = {};',
                 `
@@ -176,6 +181,17 @@ class WeappPlugin {
                 }
               }
             });
+
+            if (isNodeModulesUsingComponent(asset.name) && compiler.options.mode === 'development') {
+              if (isJs) {
+                content = (
+                  await minify(content, {
+                    compress: true,
+                    mangle: false,
+                  })
+                ).code;
+              }
+            }
             compilation.updateAsset(asset.name, new RawSource(content));
           }
         },

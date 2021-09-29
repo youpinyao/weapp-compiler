@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "node ./index.js build",
-    "dev": "nodemon --inspect --watch build ./index.js dev"
+    "dev": "nodemon --inspect --trace-deprecation --watch build ./index.js dev"
   },
   "repository": {
     "type": "git",
@@ -31,7 +31,6 @@
     "file-loader": "^6.2.0",
     "fs-extra": "^9.1.0",
     "hasha": "^5.2.2",
-    "html-webpack-plugin": "^5.3.1",
     "htmlparser2": "^6.0.1",
     "huawei-obs-sync": "^2.0.4",
     "less": "^4.1.1",
@@ -43,6 +42,7 @@
     "postcss-preset-env": "^6.7.0",
     "progress": "^2.0.3",
     "style-loader": "^2.0.0",
+    "terser": "^5.9.0",
     "url-loader": "^4.1.1",
     "webpack": "^5.36.2",
     "webpack-bundle-analyzer": "^4.4.0",
