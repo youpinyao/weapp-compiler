@@ -1,5 +1,5 @@
 const path = require('path');
-const { minify } = require('terser');
+const UglifyJS = require('uglify-js');
 const { RawSource } = require('webpack-sources');
 const { assets: assetsDir, isNodeModulesUsingComponent } = require('../config');
 const resourceAccept = require('../resourceAccept');
@@ -184,12 +184,11 @@ class WeappPlugin {
 
             if (isNodeModulesUsingComponent(asset.name) && compiler.options.mode === 'development') {
               if (isJs) {
-                content = (
-                  await minify(content, {
-                    compress: true,
-                    mangle: false,
-                  })
-                ).code;
+                content = UglifyJS.minify(content, {
+                  mangle: false,
+                  compress: true,
+                  sourceMap: false,
+                }).code;
               }
             }
             compilation.updateAsset(asset.name, new RawSource(content));
