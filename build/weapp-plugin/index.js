@@ -1,5 +1,6 @@
 const path = require('path');
 const UglifyJS = require('uglify-js');
+const hasha = require('hasha');
 const { RawSource } = require('webpack-sources');
 const { assets: assetsDir, isNodeModulesUsingComponent } = require('../config');
 const resourceAccept = require('../resourceAccept');
@@ -7,6 +8,8 @@ const { addToUploadQueue } = require('../upload');
 const withWindows = require('../withWindows');
 
 const pluginName = 'WeappCompilerPlugin';
+
+const contentCache = {};
 
 class WeappPlugin {
   // eslint-disable-next-line
@@ -182,13 +185,25 @@ class WeappPlugin {
               }
             });
 
-            if (isNodeModulesUsingComponent(asset.name) && compiler.options.mode === 'development') {
-              if (isJs) {
+            if (
+              (assetName === 'commons.js' ||
+                assetName === 'vendors.js' ||
+                isNodeModulesUsingComponent(asset.name)) &&
+              compiler.options.mode === 'development'
+            ) {
+              const hash = hasha(content);
+              if (contentCache[assetName] && contentCache[assetName].hash === hash) {
+                content = contentCache[assetName].content;
+              } else if (isJs) {
                 content = UglifyJS.minify(content, {
                   mangle: false,
                   compress: true,
                   sourceMap: false,
                 }).code;
+                contentCache[assetName] = {
+                  hash,
+                  content,
+                };
               }
             }
             compilation.updateAsset(asset.name, new RawSource(content));
