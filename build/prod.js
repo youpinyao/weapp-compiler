@@ -1,12 +1,16 @@
 const webpack = require('webpack');
+const record = require('./record');
 const webpackConfig = require('./webpack.config');
 
 module.exports = (opts) => {
   const compiler = webpack(
-    webpackConfig({
-      mode: 'production',
-      devtool: 'cheap-module-source-map',
-    }, opts || {}),
+    webpackConfig(
+      {
+        mode: 'production',
+        devtool: 'cheap-module-source-map',
+      },
+      opts || {},
+    ),
   );
 
   compiler.run((err, stats) => {
@@ -14,6 +18,10 @@ module.exports = (opts) => {
       console.error(err);
       return;
     }
+
+    record({
+      env: 'production',
+    });
 
     console.log(
       stats.toString({

@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const record = require('./record');
 const webpackConfig = require('./webpack.config');
 
 module.exports = (opts) => {
@@ -17,6 +18,10 @@ module.exports = (opts) => {
       console.error(err);
       return;
     }
+
+    record({
+      env: 'development',
+    });
 
     console.log(
       stats.toString({
