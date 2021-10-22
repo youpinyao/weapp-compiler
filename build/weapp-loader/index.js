@@ -7,7 +7,7 @@ const { entrys, entry } = require('../config');
 const resourceAccept = require('../resourceAccept');
 
 function resolvePath(file, dir) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     this.resolve(entry, file, (err, result) => {
       let res = result;
       if (err) {
@@ -88,7 +88,7 @@ function withPublicPath(str, publicPath) {
 
 function loadModule(file) {
   this.addDependency(file);
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     this.loadModule(file, (err, src) => {
       if (err) {
         // console.log();

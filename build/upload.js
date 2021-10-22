@@ -5,6 +5,7 @@ const OSSClient = require('ali-oss');
 const chalk = require('chalk');
 const Progress = require('progress');
 const { output, obsConfig, ossConfig } = require('./config');
+const { getStorage, setStorage } = require('./storage');
 
 let obsClient;
 let ossClient;
@@ -84,6 +85,12 @@ async function getObsStat(file) {
 }
 
 function getStat(file) {
+  const isUploaded = !!getStorage(file);
+
+  if (isUploaded) {
+    return Promise.resolve();
+  }
+
   if (ossConfig) {
     return getOssStat(file);
   }
@@ -134,12 +141,14 @@ async function checkUpload() {
         uploadQueue[file[0]] = 'uploading';
         try {
           await getStat(file[0]);
+          setStorage(file[0], true);
           updateProgress();
           // console.log(
           //   chalk.blue(`${publicPath}${path.relative(output, file[0])} ${updateProgress()}`),
           // );
         } catch (error) {
           await doUpload(file[0]);
+          setStorage(file[0], true);
           updateProgress();
           // console.log(
           //   chalk.green(`${publicPath}${path.relative(output, file[0])} ${updateProgress()}`),

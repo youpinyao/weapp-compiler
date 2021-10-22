@@ -1,10 +1,10 @@
 # weapp compiler with webpack5
 
-## 启动
+## 安装
 
 ```node
 
-npm i weapp-compiler@2.x
+npm i weapp-compiler@2.x -D
 ```
 
 
@@ -79,4 +79,10 @@ module.exports = {
     }
   ]
 },
+```
+
+## .gitignore
+
+```node
+.temp
 ```
