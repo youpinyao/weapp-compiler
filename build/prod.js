@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const { ENV } = require('./env');
 const record = require('./record');
 const webpackConfig = require('./webpack.config');
 
@@ -6,7 +7,7 @@ module.exports = (opts) => {
   const compiler = webpack(
     webpackConfig(
       {
-        mode: 'production',
+        mode: ENV.PROD,
         devtool: 'cheap-module-source-map',
       },
       opts || {},
@@ -20,7 +21,7 @@ module.exports = (opts) => {
     }
 
     record({
-      env: 'production',
+      env: ENV.PROD,
     });
 
     console.log(

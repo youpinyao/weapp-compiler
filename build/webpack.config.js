@@ -21,6 +21,8 @@ const {
 const WeappPlugin = require('./weapp-plugin');
 const withWindows = require('./withWindows');
 const resourceAccept = require('./resourceAccept');
+const { ENV } = require('./env');
+const { getBuildEnv } = require('./buildEnv');
 
 const defaultCopyFiles = ['project.config.json', 'sitemap.json'];
 
@@ -51,6 +53,9 @@ module.exports = (options, { analyzer } = {}) => {
       //   console.log(asset.chunk.name);
       //   return '[name].wxss';
       // },
+    }),
+    new webpack.DefinePlugin({
+      'process.env.BUILD_ENV': JSON.stringify(getBuildEnv()),
     }),
     new webpack.ProgressPlugin({
       activeModules: false,
@@ -219,7 +224,7 @@ module.exports = (options, { analyzer } = {}) => {
   }
   return merge(
     {
-      mode: 'production',
+      mode: ENV.PROD,
       entry: entrys,
       context: entry,
       stats: {

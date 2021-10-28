@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "node ./index.js build",
+    "simulation": "node ./index.js build -s",
     "dev": "nodemon --inspect --trace-deprecation --watch build ./index.js dev"
   },
   "repository": {

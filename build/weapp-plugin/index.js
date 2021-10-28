@@ -6,6 +6,7 @@ const { assets: assetsDir, isNodeModulesUsingComponent } = require('../config');
 const resourceAccept = require('../resourceAccept');
 const { addToUploadQueue } = require('../upload');
 const withWindows = require('../withWindows');
+const { ENV } = require('../env');
 
 const pluginName = 'WeappCompilerPlugin';
 
@@ -189,7 +190,7 @@ class WeappPlugin {
               (assetName === 'commons.js' ||
                 assetName === 'vendors.js' ||
                 isNodeModulesUsingComponent(asset.name)) &&
-              compiler.options.mode === 'development'
+              compiler.options.mode === ENV.DEV
             ) {
               const hash = hasha(content);
               if (contentCache[assetName] && contentCache[assetName].hash === hash) {
