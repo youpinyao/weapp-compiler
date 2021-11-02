@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const webpack = require('webpack');
 const getEnv = require('./config/getEnv');
 const recordEnv = require('./utils/recordEnv');
@@ -26,11 +27,15 @@ module.exports = (opts) => {
       env: ENV.DEV,
     });
 
-    console.log(
-      stats.toString({
-        chunks: false, // Makes the build much quieter
-        colors: true, // Shows colors in the console
-      }),
-    );
+    if (stats.hasErrors()) {
+      console.log(
+        stats.toString({
+          chunks: false, // Makes the build much quieter
+          colors: true, // Shows colors in the console
+        }),
+      );
+    }
+
+    console.log(chalk.green(`completed in ${(stats.endTime - stats.startTime) / 1000} seconds`));
   });
 };

@@ -126,11 +126,9 @@ function updateProgress() {
 
   if (completed === total) {
     progress = null;
-    setTimeout(() => {
-      console.log(chalk.green('------------------------'));
-      console.log(chalk.green('assets upload completed'));
-      console.log(chalk.green('------------------------'));
-    }, 0);
+    // setTimeout(() => {
+    //   console.log(chalk.green('assets upload completed'));
+    // }, 0);
   }
 
   return `[${completed}/${total}]`;
