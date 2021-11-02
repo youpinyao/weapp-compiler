@@ -7,22 +7,27 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 
-const {
-  alias,
-  output,
-  entrys,
-  entry,
-  publicPath = 'auto',
-  copyFiles = [],
-  assets,
-  app,
-  isSubpackage,
-} = require('./config');
-const WeappPlugin = require('./weapp-plugin');
-const withWindows = require('./withWindows');
-const resourceAccept = require('./resourceAccept');
-const { ENV } = require('./env');
-const { getBuildEnv } = require('./buildEnv');
+const WeappPlugin = require('./plugin');
+const getResourceAccept = require('./config/getResourceAccept');
+const { getBuildEnv } = require('./utils/buildEnv');
+const getContext = require('./config/getContext');
+const getConfig = require('./config/getConfig');
+const getOutput = require('./config/getOutput');
+const getEntrys = require('./config/getEntrys');
+const getAssets = require('./config/getAssets');
+const getAppConfig = require('./config/getAppConfig');
+
+const isSubpackage = require('./utils/isSubpackage');
+const compatiblePath = require('./utils/compatiblePath');
+const getEnv = require('./config/getEnv');
+
+const ENV = getEnv();
+const appConfig = getAppConfig();
+const assets = getAssets();
+const context = getContext();
+const { alias, publicPath = 'auto', copyFiles = [] } = getConfig();
+const output = getOutput();
+const entrys = getEntrys();
 
 const defaultCopyFiles = ['project.config.json', 'sitemap.json'];
 
@@ -40,7 +45,7 @@ if (fse.existsSync(output)) {
 module.exports = (options, { analyzer } = {}) => {
   const patterns = [];
   // eslint-disable-next-line
-  const weappAssetsName = (resourcePath, resourceQuery) => {
+  const assetsName = (resourcePath, resourceQuery) => {
     if (/node_modules/g.test(resourcePath)) {
       return path.relative(path.resolve(process.cwd(), 'node_modules'), resourcePath);
     }
@@ -130,7 +135,7 @@ module.exports = (options, { analyzer } = {}) => {
           return false;
         }
 
-        if (isSubpackage(path.relative(entry, resource))) {
+        if (isSubpackage(path.relative(context, resource))) {
           return false;
         }
         return true;
@@ -139,7 +144,7 @@ module.exports = (options, { analyzer } = {}) => {
       reuseExistingChunk: true,
     },
   };
-  (app.subpackages || []).forEach((pkg) => {
+  (appConfig.subpackages || []).forEach((pkg) => {
     let { root } = pkg;
     const name = path.join(root, 'subpackage_common');
     cacheGroups[name] = {
@@ -157,7 +162,7 @@ module.exports = (options, { analyzer } = {}) => {
         if (/node_modules/.test(resource)) {
           return false;
         }
-        return withWindows(path.relative(entry, resource)).indexOf(root) === 0;
+        return compatiblePath(path.relative(context, resource)).indexOf(root) === 0;
       },
       minChunks: 2,
       reuseExistingChunk: true,
@@ -165,16 +170,16 @@ module.exports = (options, { analyzer } = {}) => {
   });
 
   defaultCopyFiles.forEach((file) => {
-    if (fse.existsSync(path.resolve(entry, file))) {
+    if (fse.existsSync(path.resolve(context, file))) {
       patterns.push({
-        from: path.resolve(entry, file),
+        from: path.resolve(context, file),
         to: path.resolve(output, file),
       });
     }
   });
   copyFiles.forEach((file) => {
     patterns.push({
-      from: path.resolve(entry, file.from),
+      from: path.resolve(context, file.from),
       to: path.resolve(output, file.to),
     });
   });
@@ -226,7 +231,7 @@ module.exports = (options, { analyzer } = {}) => {
     {
       mode: ENV.PROD,
       entry: entrys,
-      context: entry,
+      context,
       stats: {
         errorDetails: true,
       },
@@ -242,7 +247,7 @@ module.exports = (options, { analyzer } = {}) => {
       module: {
         rules: [
           {
-            test: resourceAccept,
+            test: getResourceAccept(),
             use: [
               {
                 loader: 'url-loader',
@@ -277,7 +282,7 @@ module.exports = (options, { analyzer } = {}) => {
                     options: {
                       lessOptions() {
                         return {
-                          paths: [entry],
+                          paths: [context],
                         };
                       },
                     },
@@ -287,17 +292,29 @@ module.exports = (options, { analyzer } = {}) => {
             ],
           },
           {
-            test: /\.(json|wxs)$/i,
+            test: /\.(json)$/i,
             type: 'javascript/auto',
             use: [
               {
                 loader: 'file-loader',
                 options: {
-                  name: weappAssetsName,
+                  name: assetsName,
+                },
+              },
+            ],
+          },
+          {
+            test: /\.(wxs)$/i,
+            type: 'javascript/auto',
+            use: [
+              {
+                loader: 'file-loader',
+                options: {
+                  name: assetsName,
                 },
               },
               {
-                loader: path.resolve(__dirname, 'weapp-loader'),
+                loader: path.resolve(__dirname, 'loader/wxs-loader'),
               },
             ],
           },
@@ -307,11 +324,11 @@ module.exports = (options, { analyzer } = {}) => {
               {
                 loader: 'file-loader',
                 options: {
-                  name: weappAssetsName,
+                  name: assetsName,
                 },
               },
               {
-                loader: path.resolve(__dirname, 'weapp-loader'),
+                loader: path.resolve(__dirname, 'loader/wxml-loader'),
               },
             ],
           },
@@ -338,7 +355,7 @@ module.exports = (options, { analyzer } = {}) => {
             test: /\.(js)$/i,
             use: [
               {
-                loader: path.resolve(__dirname, 'weapp-loader'),
+                loader: path.resolve(__dirname, 'loader/js-loader'),
               },
             ],
           },

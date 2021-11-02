@@ -1,7 +1,9 @@
 const webpack = require('webpack');
-const { ENV } = require('./env');
-const record = require('./record');
+const getEnv = require('./config/getEnv');
+const recordEnv = require('./utils/recordEnv');
 const webpackConfig = require('./webpack.config');
+
+const ENV = getEnv();
 
 module.exports = (opts) => {
   const compiler = webpack(
@@ -20,7 +22,7 @@ module.exports = (opts) => {
       return;
     }
 
-    record({
+    recordEnv({
       env: ENV.DEV,
     });
 

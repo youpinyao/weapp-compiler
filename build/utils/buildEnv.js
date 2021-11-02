@@ -1,18 +1,20 @@
-const { ENV } = require('./env');
+const getEnv = require('../config/getEnv');
 
+const ENV = getEnv();
 let env = '';
 
 function setBuildEnv({ mode, simulation }) {
   env = mode;
 
   if (simulation) {
-    env = ENV.SIMU;
+    env = ENV.SIMULATION;
   }
 }
 
 function getBuildEnv() {
   return env;
 }
+
 module.exports = {
   setBuildEnv,
   getBuildEnv,

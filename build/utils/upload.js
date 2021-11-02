@@ -1,11 +1,16 @@
-const { withWindows } = require('huawei-obs-sync/src/config');
 const path = require('path');
 const OBSClient = require('esdk-obs-nodejs');
 const OSSClient = require('ali-oss');
 const chalk = require('chalk');
 const Progress = require('progress');
-const { output, obsConfig, ossConfig } = require('./config');
+const getConfig = require('../config/getConfig');
+
 const { getStorage, setStorage } = require('./storage');
+const compatiblePath = require('./compatiblePath');
+const getOutput = require('../config/getOutput');
+
+const output = getOutput();
+const { obsConfig, ossConfig } = getConfig();
 
 let obsClient;
 let ossClient;
@@ -32,13 +37,13 @@ function getOssClient() {
 
 function doOssUpload(file) {
   return getOssClient().put(
-    withWindows(path.join(ossConfig.dir, path.relative(output, file))),
+    compatiblePath(path.join(ossConfig.dir, path.relative(output, file))),
     file,
   );
 }
 
 function getOssStat(file) {
-  return getOssClient().head(withWindows(path.join(ossConfig.dir, path.relative(output, file))));
+  return getOssClient().head(compatiblePath(path.join(ossConfig.dir, path.relative(output, file))));
 }
 
 function doObsUpload(file) {
@@ -46,7 +51,7 @@ function doObsUpload(file) {
     getObsClient().putObject(
       {
         Bucket: obsConfig.bucket,
-        Key: withWindows(path.join(obsConfig.dir, path.relative(output, file))),
+        Key: compatiblePath(path.join(obsConfig.dir, path.relative(output, file))),
         SourceFile: file,
       },
       (err, result) => {
@@ -69,7 +74,7 @@ async function getObsStat(file) {
     getObsClient().getObjectMetadata(
       {
         Bucket: obsConfig.bucket,
-        Key: withWindows(path.join(obsConfig.dir, path.relative(output, file))),
+        Key: compatiblePath(path.join(obsConfig.dir, path.relative(output, file))),
       },
       (err, result) => {
         if (err) {
@@ -113,6 +118,7 @@ function updateProgress() {
     progress = new Progress('uploading assets [:bar] :current/:total', {
       total,
       width: 40,
+      clear: true,
     });
   }
 

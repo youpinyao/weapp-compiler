@@ -2,7 +2,7 @@ const os = require('os');
 
 const platform = os.platform();
 
-function withWindows(str) {
+function compatiblePath(str) {
   if (platform === 'win32') {
     // path.win32.normalize()
     return str.replace(/\\/g, '/');
@@ -10,4 +10,4 @@ function withWindows(str) {
   return str;
 }
 
-module.exports = withWindows;
+module.exports = compatiblePath;
