@@ -67,11 +67,12 @@ function getWxmlAssets(filePath, content) {
       onend: async () => {
         const filteredAttrs = allAttrs
           .filter((item) => !!item)
+          .map((item) => item.split('?')[0])
           .filter((item) => !/^(http:|https:)/.test(item))
           .filter((item) => !/{{.*}}/g.test(item))
           .filter((item) => !/\+.*\+/g.test(item));
 
-        const assets = filteredAttrs.filter((item) => getResourceAccept().test(item.split('?')[0]));
+        const assets = filteredAttrs.filter((item) => getResourceAccept().test(item));
         const wxmls = allAttrs.filter((item) => /\.(wxs|wxml)$/g.test(item));
 
         const assetsImports = [];
