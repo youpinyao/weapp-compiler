@@ -200,7 +200,10 @@ class WeappPlugin {
               } else if (isJs) {
                 content = UglifyJS.minify(content, {
                   mangle: false,
-                  compress: true,
+                  compress: {
+                    drop_console: false,
+                    drop_debugger: false,
+                  },
                   sourceMap: false,
                 }).code;
                 contentCache[assetName] = {

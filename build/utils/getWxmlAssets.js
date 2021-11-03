@@ -20,7 +20,7 @@ function getWxmlAssets(filePath, content) {
             resolve(res);
           } else {
             // console.log('-------------');
-            // console.log(filePath);
+            // console.log(attr);
             this.emitError(err);
             // this.emitWarning(err);
             // reject(err);
@@ -36,7 +36,7 @@ function getWxmlAssets(filePath, content) {
     let allAttrs = [];
     const parser = new htmlparser2.Parser({
       onopentag: async (name, attributes) => {
-        const reg = /url\(.*\)|url\('.*'\)|url\(".*"\)/g;
+        const reg = /url\(.*\)/g;
         const { style } = attributes;
 
         allAttrs = allAttrs.concat(
@@ -51,7 +51,11 @@ function getWxmlAssets(filePath, content) {
           styles.forEach((styleItem) => {
             (styleItem.match(reg) || []).forEach((item) => {
               allAttrs.push(
-                item.replace(/^(url\(|url\('|url\(")/g, '').replace(/(\)|'\)|"\))$/g, ''),
+                item
+                  .replace(/^(url\(”)/g, '')
+                  .replace(/^(url\(')/g, '')
+                  .replace(/^(url\()/g, '')
+                  .replace(/(“\)|'\)|\))$/g, ''),
               );
             });
           });
@@ -64,7 +68,8 @@ function getWxmlAssets(filePath, content) {
         const filteredAttrs = allAttrs
           .filter((item) => !!item)
           .filter((item) => !/^(http:|https:)/.test(item))
-          .filter((item) => !/{{.*}}/g.test(item));
+          .filter((item) => !/{{.*}}/g.test(item))
+          .filter((item) => !/\+.*\+/g.test(item));
 
         const assets = filteredAttrs.filter((item) => getResourceAccept().test(item.split('?')[0]));
         const wxmls = allAttrs.filter((item) => /\.(wxs|wxml)$/g.test(item));
