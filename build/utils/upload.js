@@ -1,7 +1,7 @@
 const path = require('path');
 const OBSClient = require('esdk-obs-nodejs');
 const OSSClient = require('ali-oss');
-const chalk = require('chalk');
+// const chalk = require('chalk');
 const Progress = require('progress');
 const getConfig = require('../config/getConfig');
 
@@ -15,7 +15,7 @@ const { obsConfig, ossConfig } = getConfig();
 let obsClient;
 let ossClient;
 let progress;
-const uploadQueue = {};
+let uploadQueue = {};
 
 function getObsClient() {
   if (!obsClient) {
@@ -125,7 +125,11 @@ function updateProgress() {
   progress.tick();
 
   if (completed === total) {
+    progress.tick({
+      current: total,
+    });
     progress = null;
+    uploadQueue = {};
     // setTimeout(() => {
     //   console.log(chalk.green('assets upload completed'));
     // }, 0);
