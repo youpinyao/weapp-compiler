@@ -66,6 +66,7 @@ class WeappPlugin {
           let hasCommonWxss = false;
           let hasVendorWxss = false;
           let hasCommonJs = false;
+          let hasRuntimeJs = false;
           let hasVendorJs = false;
           const subpackages = {};
 
@@ -84,6 +85,9 @@ class WeappPlugin {
             }
             if (hasVendorJs === false && item.name === 'vendors.js') {
               hasVendorJs = true;
+            }
+            if (hasRuntimeJs === false && item.name === 'runtime.js') {
+              hasRuntimeJs = true;
             }
             if (/subpackage_common/g.test(item.name)) {
               const pathInfo = path.parse(item.name);
@@ -117,6 +121,13 @@ class WeappPlugin {
 
             // 注入全局引用模块
             if (isJs) {
+              if (!/(var self = global;)/g.test(content)) {
+                content = `var self = global; \n${content}`;
+              }
+            }
+
+            // runtime 暴露到全局
+            if (assetName === 'runtime.js') {
               content = content.replace(
                 'var __webpack_module_cache__ = {};',
                 `
@@ -124,27 +135,26 @@ class WeappPlugin {
                     global.__webpack_module_cache__ = {};
                   }
                   var __webpack_module_cache__ = global.__webpack_module_cache__;
-                  `,
+                  global.__webpack_require__ = __webpack_require__;
+                `,
               );
+            }
+
+            // 注入公共模块 js
+            if (assetName === 'app.js') {
               // sdk2.17.3 window 下没有 regeneratorRuntime
               content = content.replace(
                 'Function("r", "regeneratorRuntime = r")(runtime);',
                 'global.regeneratorRuntime = runtime',
               );
-              // content = content.replace('/******/ (() => { // webpackBootstrap', '');
-              // content = content.replace('/******/ })()\n;', '');
-              if (!/(var self = global;)/g.test(content)) {
-                content = `var self = global; \n${content}`;
-              }
-            }
-
-            // 注入公共模块 js
-            if (assetName === 'app.js') {
               if (!/require('\.\/commons\.js')/g.test(content) && hasCommonJs) {
                 content = `require('./commons.js');\n${content}`;
               }
               if (!/require('\.\/vendors\.js')/g.test(content) && hasVendorJs) {
                 content = `require('./vendors.js');\n${content}`;
+              }
+              if (!/require('\.\/runtime\.js')/g.test(content) && hasRuntimeJs) {
+                content = `require('./runtime.js');\n${content}`;
               }
             }
 

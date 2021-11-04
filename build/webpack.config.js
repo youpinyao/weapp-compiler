@@ -333,27 +333,24 @@ module.exports = (options, { analyzer } = {}) => {
             ],
           },
           {
-            test: /\.m?js$/,
-            // exclude: /node_modules/,
-            use: {
-              loader: 'babel-loader',
-              options: {
-                presets: [
-                  [
-                    '@babel/preset-env',
-                    {
-                      targets: 'defaults',
-                      modules: 'commonjs',
-                    },
-                  ],
-                ],
-                plugins: ['@babel/plugin-transform-runtime'],
-              },
-            },
-          },
-          {
             test: /\.(js)$/i,
             use: [
+              {
+                loader: 'babel-loader',
+                options: {
+                  cacheDirectory: true,
+                  presets: [
+                    [
+                      '@babel/preset-env',
+                      {
+                        targets: 'defaults',
+                        modules: 'commonjs',
+                      },
+                    ],
+                  ],
+                  plugins: ['@babel/plugin-transform-runtime'],
+                },
+              },
               {
                 loader: path.resolve(__dirname, 'loader/js-loader'),
               },
@@ -362,6 +359,9 @@ module.exports = (options, { analyzer } = {}) => {
         ],
       },
       optimization: {
+        runtimeChunk: {
+          name: 'runtime',
+        },
         splitChunks: {
           minSize: 0,
           chunks: 'all',

@@ -1,6 +1,7 @@
 const path = require('path');
 const fse = require('fs-extra');
 const getEntrys = require('../config/getEntrys');
+const loadModule = require('../utils/loadModule');
 
 const entrys = getEntrys();
 
@@ -21,7 +22,11 @@ module.exports = async function loader(source) {
       const otherFilePath = path.resolve(fileInfo.dir, fileInfo.name + ext);
 
       if (await fse.pathExists(otherFilePath)) {
-        imports.unshift(`import './${fileInfo.name}${ext}'\n`);
+        if (['.less', '.wxss', 'css'].indexOf(ext) !== -1) {
+          imports.unshift(`import './${fileInfo.name}${ext}'\n`);
+        } else {
+          await loadModule.call(this, otherFilePath);
+        }
       }
     }
   }
