@@ -8,9 +8,9 @@ const getAssets = require('../config/getAssets');
 const { addToUploadQueue } = require('../utils/upload');
 const getResourceAccept = require('../config/getResourceAccept');
 const compatiblePath = require('../utils/compatiblePath');
-const getEnv = require('../config/getEnv');
+const ENV = require('../config/ENV');
 
-const env = getEnv();
+const env = ENV();
 
 const assetsDir = getAssets();
 const pluginName = 'WeappCompilerPlugin';

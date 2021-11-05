@@ -1,7 +1,6 @@
-const getEnv = require('../config/getEnv');
+const ENV = require('../config/ENV');
 const recordEnv = require('./recordEnv');
 
-const ENV = getEnv();
 let env = '';
 
 function setBuildEnv({ mode, development, simulation }) {
