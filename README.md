@@ -14,6 +14,11 @@ npm i weapp-compiler@2.x -D
 npm run dev
 ```
 
+## 测试
+
+```node
+npm run build -d
+```
 ## 预发
 
 ```node
