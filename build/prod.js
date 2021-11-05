@@ -1,7 +1,6 @@
 const chalk = require('chalk');
 const webpack = require('webpack');
 const getEnv = require('./config/getEnv');
-const recordEnv = require('./utils/recordEnv');
 const webpackConfig = require('./webpack.config');
 
 const ENV = getEnv();
@@ -22,10 +21,6 @@ module.exports = (opts) => {
       console.error(err);
       return;
     }
-
-    recordEnv({
-      env: ENV.PROD,
-    });
 
     if (stats.hasErrors()) {
       console.log(
