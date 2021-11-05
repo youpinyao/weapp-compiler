@@ -10,8 +10,6 @@ const getResourceAccept = require('../config/getResourceAccept');
 const compatiblePath = require('../utils/compatiblePath');
 const ENV = require('../config/ENV');
 
-const env = ENV();
-
 const assetsDir = getAssets();
 const pluginName = 'WeappCompilerPlugin';
 const contentCache = {};
@@ -202,7 +200,7 @@ class WeappPlugin {
               (assetName === 'commons.js' ||
                 assetName === 'vendors.js' ||
                 isNodeModulesUsingComponent(asset.name)) &&
-              compiler.options.mode === env.DEV
+              compiler.options.mode === ENV.DEV
             ) {
               const hash = hasha(content);
               if (contentCache[assetName] && contentCache[assetName].hash === hash) {
