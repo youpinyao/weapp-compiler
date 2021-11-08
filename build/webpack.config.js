@@ -39,6 +39,8 @@ if (fse.existsSync(output)) {
       fse.removeSync(path.resolve(output, item));
     }
   });
+} else {
+  fse.mkdirSync(output);
 }
 
 module.exports = (options, { analyzer } = {}) => {
