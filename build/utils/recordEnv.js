@@ -4,7 +4,7 @@ const getOutput = require('../config/getOutput');
 const ENV = require('../config/ENV');
 
 module.exports = (config) => {
-  fs.writeJSON(path.join(getOutput(), '.weapp'), {
+  fs.writeJSONSync(path.join(getOutput(), 'weapp.env.json'), {
     env: ENV.DEV,
     ...config,
   });
