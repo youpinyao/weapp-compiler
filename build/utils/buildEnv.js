@@ -1,4 +1,4 @@
-const ENV = require('../config/ENV');
+const ENV = require('../config/env');
 const recordEnv = require('./recordEnv');
 
 let env = '';

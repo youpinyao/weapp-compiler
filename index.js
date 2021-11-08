@@ -6,7 +6,7 @@ const fs = require('fs');
 const dev = require('./build/dev');
 const prod = require('./build/prod');
 const { setBuildEnv } = require('./build/utils/buildEnv');
-const ENV = require('./build/config/ENV');
+const ENV = require('./build/config/env');
 
 const { version } = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, './package.json')).toString(),

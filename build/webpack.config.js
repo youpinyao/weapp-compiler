@@ -19,7 +19,7 @@ const getAppConfig = require('./config/getAppConfig');
 
 const isSubpackage = require('./utils/isSubpackage');
 const compatiblePath = require('./utils/compatiblePath');
-const ENV = require('./config/ENV');
+const ENV = require('./config/env');
 
 const appConfig = getAppConfig();
 const assets = getAssets();

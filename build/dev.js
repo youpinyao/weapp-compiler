@@ -1,6 +1,6 @@
 const chalk = require('chalk');
 const webpack = require('webpack');
-const ENV = require('./config/ENV');
+const ENV = require('./config/env');
 const webpackConfig = require('./webpack.config');
 
 module.exports = (opts) => {
