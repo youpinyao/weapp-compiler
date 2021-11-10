@@ -259,7 +259,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
                 loader: 'url-loader',
                 options: {
                   limit: 0,
-                  // true 需要 .default, false 不需要 .defualt
+                  // true 需要 .default, false 不需要 .defualt
                   esModule: false,
                   fallback: {
                     loader: 'file-loader',
