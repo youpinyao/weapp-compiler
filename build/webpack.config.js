@@ -43,8 +43,7 @@ if (fse.existsSync(output)) {
   fse.mkdirSync(output);
 }
 
-module.exports = (options, { analyzer } = {}) => {
-  const patterns = [];
+module.exports = (options, { analyzer, quiet } = {}) => {
   // eslint-disable-next-line
   const assetsName = (resourcePath, resourceQuery) => {
     if (/node_modules/g.test(resourcePath)) {
@@ -62,19 +61,6 @@ module.exports = (options, { analyzer } = {}) => {
     }),
     new webpack.DefinePlugin({
       'process.env.BUILD_ENV': JSON.stringify(getBuildEnv()),
-    }),
-    new webpack.ProgressPlugin({
-      activeModules: false,
-      entries: true,
-      // handler(percentage, message, ...args) {
-      //   // custom logic
-      // },
-      modules: true,
-      modulesCount: 5000,
-      profile: false,
-      dependencies: true,
-      dependenciesCount: 10000,
-      percentBy: null,
     }),
     new WeappPlugin(),
   ];
@@ -170,30 +156,6 @@ module.exports = (options, { analyzer } = {}) => {
     };
   });
 
-  defaultCopyFiles.forEach((file) => {
-    if (fse.existsSync(path.resolve(context, file))) {
-      patterns.push({
-        from: path.resolve(context, file),
-        to: path.resolve(output, file),
-      });
-    }
-  });
-  copyFiles.forEach((file) => {
-    patterns.push({
-      from: path.resolve(context, file.from),
-      to: path.resolve(output, file.to),
-    });
-  });
-
-  plugins.push(
-    new CopyPlugin({
-      patterns,
-      options: {
-        concurrency: 100,
-      },
-    }),
-  );
-
   const getCssLoader = ({ use = [] } = {}) => {
     return [
       {
@@ -228,6 +190,49 @@ module.exports = (options, { analyzer } = {}) => {
   if (analyzer) {
     plugins.push(new BundleAnalyzerPlugin());
   }
+  if (quiet !== true) {
+    plugins.push(
+      new webpack.ProgressPlugin({
+        activeModules: false,
+        entries: true,
+        // handler(percentage, message, ...args) {
+        //   // custom logic
+        // },
+        modules: true,
+        modulesCount: 5000,
+        profile: false,
+        dependencies: true,
+        dependenciesCount: 10000,
+        percentBy: null,
+      }),
+    );
+  }
+  // 配置copy plugin
+  const patterns = [];
+  defaultCopyFiles.forEach((file) => {
+    if (fse.existsSync(path.resolve(context, file))) {
+      patterns.push({
+        from: path.resolve(context, file),
+        to: path.resolve(output, file),
+      });
+    }
+  });
+  copyFiles.forEach((file) => {
+    patterns.push({
+      from: path.resolve(context, file.from),
+      to: path.resolve(output, file.to),
+    });
+  });
+
+  plugins.push(
+    new CopyPlugin({
+      patterns,
+      options: {
+        concurrency: 100,
+      },
+    }),
+  );
+
   return merge(
     {
       mode: ENV.PROD,

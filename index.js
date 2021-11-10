@@ -21,6 +21,7 @@ program.option('-a, --analyzer', 'webpack-bundle-analyzer');
 program.option('-s, --simulation', 'process.env.BUILD_ENV = simulation');
 program.option('-d, --development', 'process.env.BUILD_ENV = development');
 program.option('-p, --production', 'process.env.BUILD_ENV = production');
+program.option('-q, --quiet', '安静模式，打印减少');
 
 program.command('dev').action(() => {
   setBuildEnv({
