@@ -7,14 +7,31 @@
 npm i weapp-compiler@2.x -D
 ```
 
+---
 
 ## 调试
+
+#### 测试
 
 ```node
 npm run dev
 ```
+#### 预发
 
-## 测试
+```node
+npm run dev -s
+```
+#### 生产
+
+```node
+npm run dev -p
+```
+
+---
+
+## 发布
+
+#### 测试
 
 ```node
 npm run build -d
@@ -31,6 +48,7 @@ npm run build -s
 npm run build
 ```
 
+---
 
 ## 配置文件 .weapp.js
 
@@ -74,6 +92,7 @@ module.exports = {
 };
 ```
 
+---
 
 ## project.config.json
 
@@ -91,6 +110,7 @@ module.exports = {
   ]
 },
 ```
+---
 
 ## .gitignore
 

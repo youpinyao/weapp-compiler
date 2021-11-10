@@ -20,6 +20,7 @@ program.version(version);
 program.option('-a, --analyzer', 'webpack-bundle-analyzer');
 program.option('-s, --simulation', 'process.env.BUILD_ENV = simulation');
 program.option('-d, --development', 'process.env.BUILD_ENV = development');
+program.option('-p, --production', 'process.env.BUILD_ENV = production');
 
 program.command('dev').action(() => {
   setBuildEnv({

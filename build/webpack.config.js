@@ -333,30 +333,30 @@ module.exports = (options, { analyzer } = {}) => {
               },
             ],
           },
-          {
-            test: /\.(js)$/i,
-            use: [
-              {
-                loader: 'babel-loader',
-                options: {
-                  cacheDirectory: true,
-                  presets: [
-                    [
-                      '@babel/preset-env',
-                      {
-                        targets: 'defaults',
-                        modules: 'commonjs',
-                      },
-                    ],
-                  ],
-                  plugins: ['@babel/plugin-transform-runtime'],
-                },
-              },
-              {
-                loader: path.resolve(__dirname, 'loader/js-loader'),
-              },
-            ],
-          },
+          // {
+          //   test: /\.(js)$/i,
+          //   use: [
+          //     {
+          //       loader: 'babel-loader',
+          //       options: {
+          //         cacheDirectory: true,
+          //         presets: [
+          //           [
+          //             '@babel/preset-env',
+          //             {
+          //               targets: 'defaults',
+          //               modules: 'commonjs',
+          //             },
+          //           ],
+          //         ],
+          //         plugins: ['@babel/plugin-transform-runtime'],
+          //       },
+          //     },
+          //     {
+          //       loader: path.resolve(__dirname, 'loader/js-loader'),
+          //     },
+          //   ],
+          // },
         ],
       },
       optimization: {
