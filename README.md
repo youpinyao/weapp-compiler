@@ -36,13 +36,13 @@ npm run dev -p
 ```node
 npm run build -d
 ```
-## 预发
+#### 预发
 
 ```node
 npm run build -s
 ```
 
-## 生产
+#### 生产
 
 ```node
 npm run build
