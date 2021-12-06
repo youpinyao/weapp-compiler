@@ -122,6 +122,11 @@ class WeappPlugin {
               if (!/(var self = global;)/g.test(content)) {
                 content = `var self = global; \n${content}`;
               }
+              // sdk2.17.3 window 下没有 regeneratorRuntime
+              content = content.replace(
+                'Function("r", "regeneratorRuntime = r")(runtime);',
+                'global.regeneratorRuntime = runtime',
+              );
             }
 
             // runtime 暴露到全局
@@ -140,11 +145,6 @@ class WeappPlugin {
 
             // 注入公共模块 js
             if (assetName === 'app.js') {
-              // sdk2.17.3 window 下没有 regeneratorRuntime
-              content = content.replace(
-                'Function("r", "regeneratorRuntime = r")(runtime);',
-                'global.regeneratorRuntime = runtime',
-              );
               if (!/require('\.\/commons\.js')/g.test(content) && hasCommonJs) {
                 content = `require('./commons.js');\n${content}`;
               }
