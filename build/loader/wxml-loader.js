@@ -1,4 +1,3 @@
-const posthtml = require('posthtml');
 const getWxmlAssets = require('../utils/getWxmlAssets');
 const loadModule = require('../utils/loadModule');
 
@@ -6,21 +5,7 @@ module.exports = async function loader(source) {
   this.cacheable(true);
   const callback = this.async();
   const filePath = this.resourcePath;
-  let content = (
-    await posthtml()
-      .use((tree) => {
-        tree.walk((node) => {
-          if (typeof node === 'string') {
-            if (/^(<!--)/g.test(node.trim())) {
-              return '';
-            }
-            return node;
-          }
-          return node;
-        });
-      })
-      .process(source.toString())
-  ).html;
+  let content = source.toString();
   const {
     _compiler: {
       options: {
@@ -38,8 +23,11 @@ module.exports = async function loader(source) {
   for (let index = 0; index < assets.length; index += 1) {
     const [attr, file] = assets[index];
     const src = await loadModule.call(this, file);
+    const fullSrc = withPublicPath(src, publicPath);
 
-    content = content.replace(attr, withPublicPath(src, publicPath));
+    while (content.indexOf(attr) !== -1) {
+      content = content.replace(attr, fullSrc);
+    }
   }
 
   // wxml文件

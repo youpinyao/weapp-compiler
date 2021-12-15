@@ -40,7 +40,6 @@
     "os": "^0.1.1",
     "postcss-loader": "^5.2.0",
     "postcss-preset-env": "^6.7.0",
-    "posthtml": "^0.16.5",
     "progress": "^2.0.3",
     "style-loader": "^2.0.0",
     "throttle-debounce": "^3.0.1",
