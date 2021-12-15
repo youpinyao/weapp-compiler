@@ -1,3 +1,4 @@
+const posthtml = require('posthtml');
 const getWxmlAssets = require('../utils/getWxmlAssets');
 const loadModule = require('../utils/loadModule');
 
@@ -5,7 +6,21 @@ module.exports = async function loader(source) {
   this.cacheable(true);
   const callback = this.async();
   const filePath = this.resourcePath;
-  let content = source.toString();
+  let content = (
+    await posthtml()
+      .use((tree) => {
+        tree.walk((node) => {
+          if (typeof node === 'string') {
+            if (/^(<!--)/g.test(node.trim())) {
+              return '';
+            }
+            return node;
+          }
+          return node;
+        });
+      })
+      .process(source.toString())
+  ).html;
   const {
     _compiler: {
       options: {
