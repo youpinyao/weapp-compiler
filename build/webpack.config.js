@@ -288,6 +288,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
                     options: {
                       lessOptions() {
                         return {
+                          javascriptEnabled: true,
                           paths: [context],
                         };
                       },
