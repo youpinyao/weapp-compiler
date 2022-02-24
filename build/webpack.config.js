@@ -20,6 +20,7 @@ const getAppConfig = require('./config/getAppConfig');
 const isSubpackage = require('./utils/isSubpackage');
 const compatiblePath = require('./utils/compatiblePath');
 const ENV = require('./config/env');
+const { setCopyFiles } = require('./utils/isCopyFile');
 
 const appConfig = getAppConfig();
 const assets = getAssets();
@@ -232,6 +233,8 @@ module.exports = (options, { analyzer, quiet } = {}) => {
       },
     }),
   );
+
+  setCopyFiles(patterns);
 
   return merge(
     {

@@ -5,8 +5,11 @@ const getAssets = require('../config/getAssets');
 const { addToUploadQueue } = require('../utils/upload');
 const getResourceAccept = require('../config/getResourceAccept');
 const compatiblePath = require('../utils/compatiblePath');
+const { isCopyFile } = require('../utils/isCopyFile');
+const getContext = require('../config/getContext');
 
 const assetsDir = getAssets();
+const context = getContext();
 const pluginName = 'WeappCompilerPlugin';
 
 function sourceReplace(content, source, from, to) {
@@ -198,7 +201,10 @@ class WeappPlugin {
                 }
               }
             });
-            compilation.updateAsset(asset.name, newSource);
+            // 忽略 CopyPlugin的文件
+            if (!isCopyFile(path.resolve(context, asset.name))) {
+              compilation.updateAsset(asset.name, newSource);
+            }
           }
         },
       );
