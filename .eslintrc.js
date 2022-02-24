@@ -10,6 +10,7 @@ module.exports = {
   },
   rules: {
     'no-console': [0],
+    quotes: [0],
     'arrow-body-style': [0],
     'object-curly-newline': [0],
     'operator-linebreak': [0],

@@ -1,18 +1,25 @@
 const path = require('path');
-const UglifyJS = require('uglify-js');
-const hasha = require('hasha');
-const { RawSource } = require('webpack-sources');
+const { ReplaceSource } = require('webpack-sources');
 
-const { isNodeModulesUsingComponent } = require('../utils/isNodeModulesUsingComponent');
 const getAssets = require('../config/getAssets');
 const { addToUploadQueue } = require('../utils/upload');
 const getResourceAccept = require('../config/getResourceAccept');
 const compatiblePath = require('../utils/compatiblePath');
-const ENV = require('../config/env');
 
 const assetsDir = getAssets();
 const pluginName = 'WeappCompilerPlugin';
-const contentCache = {};
+
+function sourceReplace(content, source, from, to) {
+  if (content.indexOf(from) === -1) {
+    return;
+  }
+  source.replace(content.indexOf(from), content.indexOf(from) + from.length, to);
+}
+function sourceInsert(content, source, insert) {
+  if (!new RegExp(insert, 'g').test(content)) {
+    source.insert(0, `${insert}\n`);
+  }
+}
 
 class WeappPlugin {
   // eslint-disable-next-line
@@ -111,6 +118,7 @@ class WeappPlugin {
             const assetName = compatiblePath(asset.name);
             const isJs = /(\.(js))$/g.test(assetName);
             const { source } = asset;
+            const newSource = new ReplaceSource(source);
             let content = source.source();
 
             if (content.toString) {
@@ -119,11 +127,10 @@ class WeappPlugin {
 
             // 注入全局引用模块
             if (isJs) {
-              if (!/(var self = global;)/g.test(content)) {
-                content = `var self = global; \n${content}`;
-              }
-              // sdk2.17.3 window 下没有 regeneratorRuntime
-              content = content.replace(
+              sourceInsert(content, newSource, 'var self = global;');
+              sourceReplace(
+                content,
+                newSource,
                 'Function("r", "regeneratorRuntime = r")(runtime);',
                 'global.regeneratorRuntime = runtime',
               );
@@ -131,96 +138,67 @@ class WeappPlugin {
 
             // runtime 暴露到全局
             if (assetName === 'runtime.js') {
-              content = content.replace(
+              sourceReplace(
+                content,
+                newSource,
                 'var __webpack_module_cache__ = {};',
                 `
-                  if (!global.__webpack_module_cache__) {
-                    global.__webpack_module_cache__ = {};
-                  }
-                  var __webpack_module_cache__ = global.__webpack_module_cache__;
-                  global.__webpack_require__ = __webpack_require__;
-                `,
+              if (!global.__webpack_module_cache__) {
+                global.__webpack_module_cache__ = {};
+              }
+              var __webpack_module_cache__ = global.__webpack_module_cache__;
+              global.__webpack_require__ = __webpack_require__;
+            `,
               );
             }
 
             // 注入公共模块 js
             if (assetName === 'app.js') {
-              if (!/require('\.\/commons\.js')/g.test(content) && hasCommonJs) {
-                content = `require('./commons.js');\n${content}`;
-              }
-              if (!/require('\.\/vendors\.js')/g.test(content) && hasVendorJs) {
-                content = `require('./vendors.js');\n${content}`;
-              }
-              if (!/require('\.\/runtime\.js')/g.test(content) && hasRuntimeJs) {
-                content = `require('./runtime.js');\n${content}`;
-              }
+              // eslint-disable-next-line no-unused-expressions
+              hasCommonJs && sourceInsert(content, newSource, `require('./commons.js');`);
+              // eslint-disable-next-line no-unused-expressions
+              hasVendorJs && sourceInsert(content, newSource, `require('./vendors.js');`);
+              // eslint-disable-next-line no-unused-expressions
+              hasRuntimeJs && sourceInsert(content, newSource, `require('./runtime.js');`);
             }
 
             // 注入公共模块 css
             if (assetName === 'app.wxss') {
-              if (!/@import '\.\/commons\.wxss'/g.test(content) && hasCommonWxss) {
-                content = `@import './commons.wxss';\n${content}`;
-              }
-              if (!/@import '\.\/vendors_wxss\.wxss'/g.test(content) && hasVendorWxss) {
-                content = `@import './vendors_wxss.wxss';\n${content}`;
-              }
+              // eslint-disable-next-line no-unused-expressions
+              hasCommonWxss && sourceInsert(content, newSource, `@import './commons.wxss';`);
+              // eslint-disable-next-line no-unused-expressions
+              hasVendorWxss && sourceInsert(content, newSource, `@import './vendors_wxss.wxss';`);
             }
 
             // 分包注入公共模块
             Object.keys(subpackages).forEach((subpackage) => {
               const res = subpackages[subpackage];
-
-              if (
+              const isSubAndNotExist =
                 assetName.startsWith(subpackage) &&
-                !/(subpackage_common\.(js|wxss))$/g.test(assetName)
-              ) {
-                if (
-                  res.js &&
-                  /(\.js)$/g.test(assetName) &&
-                  !/'subpackage_common\.js'\);/g.test(content)
-                ) {
-                  content = `require('${compatiblePath(
-                    path.relative(path.parse(assetName).dir, res.js),
-                  )}');\n${content}`;
+                !/(subpackage_common\.(js|wxss))$/g.test(assetName);
+
+              if (isSubAndNotExist) {
+                if (res.js && /(\.js)$/g.test(assetName)) {
+                  sourceInsert(
+                    content,
+                    newSource,
+                    `require('${compatiblePath(
+                      path.relative(path.parse(assetName).dir, res.js),
+                    )}');`,
+                  );
                 }
-                if (
-                  res.wxss &&
-                  /(\.wxss)$/g.test(assetName) &&
-                  !/'subpackage_common\.wxss';/g.test(content)
-                ) {
-                  content = `@import '${compatiblePath(
-                    path.relative(path.parse(assetName).dir, res.wxss),
-                  )}';\n${content}`;
+                if (res.wxss && /(\.wxss)$/g.test(assetName)) {
+                  sourceInsert(
+                    content,
+                    newSource,
+                    `require('${compatiblePath(
+                      path.relative(path.parse(assetName).dir, res.wxss),
+                    )}');`,
+                  );
                 }
               }
             });
-
-            // 压缩 公共模块
-            if (
-              (assetName === 'commons.js' ||
-                assetName === 'vendors.js' ||
-                isNodeModulesUsingComponent(asset.name)) &&
-              compiler.options.mode === ENV.DEV
-            ) {
-              const hash = hasha(content);
-              if (contentCache[assetName] && contentCache[assetName].hash === hash) {
-                content = contentCache[assetName].content;
-              } else if (isJs) {
-                content = UglifyJS.minify(content, {
-                  mangle: false,
-                  compress: {
-                    drop_console: false,
-                    drop_debugger: false,
-                  },
-                  sourceMap: false,
-                }).code;
-                contentCache[assetName] = {
-                  hash,
-                  content,
-                };
-              }
-            }
-            compilation.updateAsset(asset.name, new RawSource(content));
+            compilation.updateAsset(asset.name, newSource);
           }
         },
       );
