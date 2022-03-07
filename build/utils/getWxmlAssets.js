@@ -72,7 +72,7 @@ function getWxmlAssets(filePath, content) {
           .filter((item) => !/{{.*}}/g.test(item))
           .filter((item) => !/\+.*\+/g.test(item));
 
-        const assets = filteredAttrs.filter((item) => getResourceAccept().test(item)).filter((item) => !/weapp_compiler_ignore/g.test(item));
+        const assets = filteredAttrs.filter((item) => getResourceAccept().test(item));
         const wxmls = allAttrs.filter((item) => /\.(wxs|wxml)$/g.test(item));
 
         const assetsImports = [];
