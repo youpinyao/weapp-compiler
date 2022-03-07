@@ -1,6 +1,6 @@
 {
   "name": "weapp-compiler",
-  "version": "2.2.19",
+  "version": "2.2.20",
   "description": "基于webpack5的小程序构建工具",
   "main": "index.js",
   "scripts": {
