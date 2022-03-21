@@ -39,7 +39,7 @@
     "mini-css-extract-plugin": "^1.6.0",
     "os": "^0.1.1",
     "postcss-loader": "^5.2.0",
-    "postcss-preset-env": "^6.7.0",
+    "postcss-preset-env": "^7.4.3",
     "progress": "^2.0.3",
     "style-loader": "^2.0.0",
     "throttle-debounce": "^3.0.1",
