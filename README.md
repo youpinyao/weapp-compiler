@@ -7,48 +7,16 @@
 npm i weapp-compiler@2.x -D
 ```
 
----
-
-## 调试
-
-#### 测试
+## 配置 package.json scripts
 
 ```node
-npm run dev
+scripts: {
+  "dev": "weapp dev",
+  "build:dev": "weapp build -d",
+  "build:pre": "weapp build -s",
+  "build": "weapp build",
+}
 ```
-#### 预发
-
-```node
-npm run dev -s
-```
-#### 生产
-
-```node
-npm run dev -p
-```
-
----
-
-## 发布
-
-#### 测试
-
-```node
-npm run build -d
-```
-#### 预发
-
-```node
-npm run build -s
-```
-
-#### 生产
-
-```node
-npm run build
-```
-
----
 
 ## 配置文件 .weapp.js
 
@@ -110,6 +78,50 @@ module.exports = {
   ]
 },
 ```
+---
+
+
+---
+
+## 调试
+
+#### 测试
+
+```node
+npm run dev
+```
+#### 预发
+
+```node
+npm run dev -s
+```
+#### 生产
+
+```node
+npm run dev -p
+```
+
+---
+
+## 发布
+
+#### 测试
+
+```node
+npm run build -d
+```
+#### 预发
+
+```node
+npm run build -s
+```
+
+#### 生产
+
+```node
+npm run build
+```
+
 ---
 
 ## .gitignore
