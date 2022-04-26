@@ -33,6 +33,7 @@
     "fs-extra": "^9.1.0",
     "hasha": "^5.2.2",
     "htmlparser2": "^6.0.1",
+    "inquirer": "^8.2.2",
     "less": "^4.1.1",
     "less-loader": "^8.0.0",
     "loader-utils": "^2.0.0",
@@ -41,6 +42,7 @@
     "postcss-loader": "^5.2.0",
     "postcss-preset-env": "^7.4.3",
     "progress": "^2.0.3",
+    "prompts": "^2.4.2",
     "style-loader": "^2.0.0",
     "throttle-debounce": "^3.0.1",
     "uglify-js": "^3.14.2",
@@ -63,6 +65,9 @@
     "sr-sdk-wxapp": "^1.4.1",
     "webpack-cli": "^4.5.0",
     "wxbarcode": "^1.0.2"
+  },
+  "nodemonConfig": {
+    "stdin": false
   },
   "engines": {
     "node": ">=14.17.1"

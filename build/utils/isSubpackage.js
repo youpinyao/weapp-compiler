@@ -1,9 +1,8 @@
 const compatiblePath = require('./compatiblePath');
-const getAppConfig = require('../config/getAppConfig');
-
-const appConfig = getAppConfig();
+const { getAppConfig } = require('../config/appConfig');
 
 function isSubpackage(file) {
+  const appConfig = getAppConfig();
   let isSub = false;
 
   (appConfig.subpackages || []).forEach((pkg) => {

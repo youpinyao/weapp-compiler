@@ -3,10 +3,9 @@ const fse = require('fs-extra');
 const getEntrys = require('../config/getEntrys');
 const loadModule = require('../utils/loadModule');
 
-const entrys = getEntrys();
-
 module.exports = async function loader(source) {
   this.cacheable(true);
+  const entrys = getEntrys();
   const callback = this.async();
   const filePath = this.resourcePath;
   const fileInfo = path.parse(filePath);

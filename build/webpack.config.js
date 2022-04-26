@@ -15,19 +15,17 @@ const getConfig = require('./config/getConfig');
 const getOutput = require('./config/getOutput');
 const getEntrys = require('./config/getEntrys');
 const getAssets = require('./config/getAssets');
-const getAppConfig = require('./config/getAppConfig');
+const { getAppConfig } = require('./config/appConfig');
 
 const isSubpackage = require('./utils/isSubpackage');
 const compatiblePath = require('./utils/compatiblePath');
 const ENV = require('./config/env');
 const { setCopyFiles } = require('./utils/isCopyFile');
 
-const appConfig = getAppConfig();
 const assets = getAssets();
 const context = getContext();
 const { alias, publicPath = 'auto', copyFiles = [] } = getConfig();
 const output = getOutput();
-const entrys = getEntrys();
 
 const defaultCopyFiles = ['project.config.json', 'sitemap.json'];
 
@@ -45,6 +43,8 @@ if (fse.existsSync(output)) {
 }
 
 module.exports = (options, { analyzer, quiet } = {}) => {
+  const entrys = getEntrys();
+  const appConfig = getAppConfig();
   // eslint-disable-next-line
   const assetsName = (resourcePath, resourceQuery) => {
     if (/node_modules/g.test(resourcePath)) {
@@ -310,6 +310,9 @@ module.exports = (options, { analyzer, quiet } = {}) => {
                 options: {
                   name: assetsName,
                 },
+              },
+              {
+                loader: path.resolve(__dirname, 'loader/json-loader'),
               },
             ],
           },
