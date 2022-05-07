@@ -68,27 +68,6 @@ module.exports = {
 
 ---
 
-## project.config.json
-
-```node
-"packOptions": {
-  "ignore": [
-    {
-      "type": "folder",
-      "value": "assets"
-    },
-    {
-      "type": "regexp",
-      "value": "\\.map$"
-    }
-  ]
-},
-```
----
-
-
----
-
 ## 调试
 
 #### 测试

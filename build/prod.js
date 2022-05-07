@@ -2,6 +2,7 @@ const chalk = require('chalk');
 const webpack = require('webpack');
 const ENV = require('./config/env');
 const webpackConfig = require('./webpack.config');
+const archiverAndUploadToObsOrOss = require('./utils/archiverAndUploadToObsOrOss');
 
 module.exports = (opts) => {
   const compiler = webpack(
@@ -30,5 +31,7 @@ module.exports = (opts) => {
     }
 
     console.log(chalk.green(`completed in ${(stats.endTime - stats.startTime) / 1000} seconds`));
+
+    archiverAndUploadToObsOrOss();
   });
 };

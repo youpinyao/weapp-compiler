@@ -21,6 +21,7 @@ const isSubpackage = require('./utils/isSubpackage');
 const compatiblePath = require('./utils/compatiblePath');
 const ENV = require('./config/env');
 const { setCopyFiles } = require('./utils/isCopyFile');
+const isProjectConfig = require('./utils/isProjectConfig');
 
 const assets = getAssets();
 const context = getContext();
@@ -34,7 +35,7 @@ if (fse.existsSync(output)) {
   const files = fse.readdirSync(output);
 
   files.forEach((item) => {
-    if (!/project\.config\.json/g.test(item)) {
+    if (!isProjectConfig(item)) {
       fse.removeSync(path.resolve(output, item));
     }
   });
@@ -215,6 +216,36 @@ module.exports = (options, { analyzer, quiet } = {}) => {
       patterns.push({
         from: path.resolve(context, file),
         to: path.resolve(output, file),
+        transform(content, absoluteFrom) {
+          if (isProjectConfig(absoluteFrom)) {
+            const projectConfig = JSON.parse(content);
+            const packOptions = projectConfig.packOptions || {};
+            const packOptionsIgnore = packOptions.ignore || [];
+
+            return JSON.stringify(
+              {
+                ...projectConfig,
+                packOptions: {
+                  ...packOptions,
+                  ignore: [
+                    {
+                      type: 'folder',
+                      value: 'assets',
+                    },
+                    {
+                      type: 'regexp',
+                      value: '\\.zip$',
+                    },
+                    ...packOptionsIgnore,
+                  ],
+                },
+              },
+              null,
+              2,
+            );
+          }
+          return content;
+        },
       });
     }
   });

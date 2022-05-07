@@ -10,6 +10,10 @@ module.exports = async function loader(source) {
   const fileInfo = path.parse(filePath);
   const sourceStr = source.toString();
 
+  if (/project/g.test(fileInfo.name)) {
+    console.log(fileInfo.name);
+  }
+
   if (entrys.app === path.resolve(fileInfo.dir, fileInfo.name)) {
     callback(null, JSON.stringify(getAppConfig(), null, 2));
   } else {
