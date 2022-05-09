@@ -51,7 +51,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
     if (/node_modules/g.test(resourcePath)) {
       return path.relative(path.resolve(process.cwd(), 'node_modules'), resourcePath);
     }
-    return '[path][name].[ext]';
+    return path.relative(getContext(), resourcePath);
   };
   const plugins = [
     new MiniCssExtractPlugin({
@@ -337,13 +337,10 @@ module.exports = (options, { analyzer, quiet } = {}) => {
             type: 'javascript/auto',
             use: [
               {
-                loader: 'file-loader',
+                loader: path.resolve(__dirname, 'loader/json-loader'),
                 options: {
                   name: assetsName,
                 },
-              },
-              {
-                loader: path.resolve(__dirname, 'loader/json-loader'),
               },
             ],
           },
