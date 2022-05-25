@@ -31,6 +31,7 @@ class WeappPlugin {
   // eslint-disable-next-line
   apply(compiler) {
     // const { RawSource } = compiler.webpack.sources;
+    // const { mode } = compiler.options;
 
     let obsAssets = [];
 
@@ -85,7 +86,7 @@ class WeappPlugin {
             if (hasCommonWxss === false && item.name === 'commons.wxss') {
               hasCommonWxss = true;
             }
-            if (hasVendorWxss === false && item.name === 'vendors_wxss.wxss') {
+            if (hasVendorWxss === false && item.name === 'vendors.wxss') {
               hasVendorWxss = true;
             }
             if (hasCommonJs === false && item.name === 'commons.js') {
@@ -165,12 +166,12 @@ class WeappPlugin {
               hasRuntimeJs && sourceInsert(content, newSource, `require('./runtime.js');`);
             }
 
-            // 注入公共模块 css
+            // 注入公共模块 wxss
             if (assetName === 'app.wxss') {
               // eslint-disable-next-line no-unused-expressions
               hasCommonWxss && sourceInsert(content, newSource, `@import './commons.wxss';`);
               // eslint-disable-next-line no-unused-expressions
-              hasVendorWxss && sourceInsert(content, newSource, `@import './vendors_wxss.wxss';`);
+              hasVendorWxss && sourceInsert(content, newSource, `@import './vendors.wxss';`);
             }
 
             // 分包注入公共模块

@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node ./index.js build",
     "simulation": "node ./index.js build -s",
-    "dev": "nodemon --inspect --trace-deprecation --watch build ./index.js dev"
+    "dev": "nodemon --inspect --trace-deprecation --watch build --watch build/config --watch build/loader --watch build/plugin --watch build/utils ./index.js dev"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "commander": "^7.2.0",
     "copy-webpack-plugin": "^8.1.0",
     "css-loader": "^5.2.0",
+    "css-minimizer-webpack-plugin": "^4.0.0",
     "dayjs": "^1.11.1",
     "esdk-obs-nodejs": "^3.21.3",
     "file-loader": "^6.2.0",

@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const fse = require('fs-extra');
 const CopyPlugin = require('copy-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 
@@ -54,6 +55,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
     return path.relative(getContext(), resourcePath);
   };
   const plugins = [
+    new WeappPlugin(),
     new MiniCssExtractPlugin({
       filename: '[name].wxss',
       // filename(asset) {
@@ -64,7 +66,6 @@ module.exports = (options, { analyzer, quiet } = {}) => {
     new webpack.DefinePlugin({
       'process.env.BUILD_ENV': JSON.stringify(getBuildEnv()),
     }),
-    new WeappPlugin(),
   ];
 
   const getResource = (module) => {
@@ -105,10 +106,10 @@ module.exports = (options, { analyzer, quiet } = {}) => {
       name: 'vendors',
       reuseExistingChunk: true,
     },
-    vendors_wxss: {
+    vendorsStyle: {
       minChunks: 2,
       test: /node_modules/,
-      name: 'vendors_wxss',
+      name: 'vendors',
       reuseExistingChunk: true,
     },
     commons: {
@@ -400,6 +401,12 @@ module.exports = (options, { analyzer, quiet } = {}) => {
         ],
       },
       optimization: {
+        minimizer: [
+          '...',
+          new CssMinimizerPlugin({
+            test: /\.wxss(\?.*)?$/i,
+          }),
+        ],
         runtimeChunk: {
           name: 'runtime',
         },
