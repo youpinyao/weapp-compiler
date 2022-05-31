@@ -23,6 +23,7 @@ const compatiblePath = require('./utils/compatiblePath');
 const ENV = require('./config/env');
 const { setCopyFiles } = require('./utils/isCopyFile');
 const isProjectConfig = require('./utils/isProjectConfig');
+const isKeepFile = require('./utils/isKeepFile');
 
 const assets = getAssets();
 const context = getContext();
@@ -36,7 +37,7 @@ if (fse.existsSync(output)) {
   const files = fse.readdirSync(output);
 
   files.forEach((item) => {
-    if (!isProjectConfig(item)) {
+    if (!isKeepFile(item)) {
       fse.removeSync(path.resolve(output, item));
     }
   });
