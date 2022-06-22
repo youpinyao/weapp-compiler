@@ -8,7 +8,7 @@ module.exports = (opts) => {
     webpackConfig(
       {
         mode: ENV.PROD,
-        devtool: opts.sourceMap ? 'source-map' : undefined,
+        devtool: opts.sourceMap ? 'source-map' : false,
       },
       opts || {},
     ),
