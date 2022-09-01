@@ -1,4 +1,5 @@
 const { merge } = require('webpack-merge');
+const fs = require('fs-extra');
 const path = require('path');
 const webpack = require('webpack');
 const fse = require('fs-extra');
@@ -6,6 +7,8 @@ const CopyPlugin = require('copy-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
+const StylelintPlugin = require('stylelint-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 
 const WeappPlugin = require('./plugin');
@@ -30,7 +33,7 @@ const context = getContext();
 const { alias, publicPath = 'auto', copyFiles = [] } = getConfig();
 const output = getOutput();
 
-const defaultCopyFiles = ['project.config.json', 'sitemap.json'];
+const defaultCopyFiles = ['project.config.json', 'project.private.config.json', 'sitemap.json'];
 
 // 删除output目录文件
 if (fse.existsSync(output)) {
@@ -211,6 +214,30 @@ module.exports = (options, { analyzer, quiet } = {}) => {
       }),
     );
   }
+  if (fs.existsSync(path.resolve(process.cwd(), 'node_modules', 'stylelint'))) {
+    plugins.push(
+      new StylelintPlugin({
+        files: ['**/*.{wxss,css,less}'],
+        lintDirtyModulesOnly: false,
+        fix: false,
+        cache: false,
+        emitError: true,
+        emitWarning: true,
+      }),
+    );
+  }
+  if (fs.existsSync(path.resolve(process.cwd(), 'node_modules', 'eslint'))) {
+    plugins.push(
+      new ESLintPlugin({
+        extensions: ['js', 'ts'],
+        lintDirtyModulesOnly: true,
+        fix: false,
+        cache: true,
+        emitError: true,
+        emitWarning: true,
+      }),
+    );
+  }
   // 配置copy plugin
   const patterns = [];
   defaultCopyFiles.forEach((file) => {
@@ -285,6 +312,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
       resolve: {
         alias,
         preferRelative: true,
+        extensions: ['.ts', '.js'],
       },
       module: {
         rules: [
@@ -376,7 +404,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
             ],
           },
           {
-            test: /\.(js)$/i,
+            test: /\.(js|ts)$/i,
             use: [
               {
                 loader: 'babel-loader',
@@ -396,6 +424,14 @@ module.exports = (options, { analyzer, quiet } = {}) => {
               },
               {
                 loader: path.resolve(__dirname, 'loader/js-loader'),
+              },
+            ],
+          },
+          {
+            test: /\.(ts)$/i,
+            use: [
+              {
+                loader: 'ts-loader',
               },
             ],
           },
