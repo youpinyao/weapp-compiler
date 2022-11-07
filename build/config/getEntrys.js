@@ -70,7 +70,7 @@ function init() {
   });
 
   // tabbar
-  if (fse.existsSync(path.resolve(context, 'custom-tab-bar/index.js'))) {
+  if (fse.existsSync(path.resolve(context, 'custom-tab-bar/index.wxml'))) {
     entrys['custom-tab-bar/index'] = path.resolve(context, 'custom-tab-bar/index');
   }
 
