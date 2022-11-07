@@ -2,7 +2,6 @@ const path = require('path');
 const fse = require('fs-extra');
 const getContext = require('./getContext');
 
-const appConfig = fse.readJSONSync(path.resolve(getContext(), 'app.json'));
 let customAppConfig;
 
 function setAppConfig(config) {
@@ -10,7 +9,7 @@ function setAppConfig(config) {
 }
 
 function getAppConfig() {
-  return customAppConfig || appConfig;
+  return customAppConfig || fse.readJSONSync(path.resolve(getContext(), 'app.json'));;
 }
 
 module.exports = {
