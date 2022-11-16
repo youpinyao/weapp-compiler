@@ -23,12 +23,12 @@ function init() {
           filePath = path.resolve(context, filePath.replace(/^\//g, ''));
         }
 
-        if (fse.existsSync(`${path.resolve(parent, filePath)}.js`)) {
+        if (fse.existsSync(`${path.resolve(parent, filePath)}.wxml`)) {
           filePath = path.resolve(parent, filePath);
         } else {
           try {
             filePath = require.resolve(filePath);
-            filePath = filePath.replace(/(\.js)$/g, '');
+            filePath = filePath.replace(/(\.(js|ts))$/g, '');
           } catch (error) {
             console.error(error);
           }
