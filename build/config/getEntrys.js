@@ -26,12 +26,11 @@ function init() {
         if (fse.existsSync(`${path.resolve(parent, filePath)}.wxml`)) {
           filePath = path.resolve(parent, filePath);
         } else {
-          try {
-            filePath = require.resolve(filePath);
-            filePath = filePath.replace(/(\.(js|ts))$/g, '');
-          } catch (error) {
-            console.error(error);
+          if (/^\//g.test(filePath)) {
+            filePath = path.relative(context, filePath);
           }
+          filePath = require.resolve(filePath);
+          filePath = filePath.replace(/(\.(js|ts))$/g, '');
         }
 
         if (fse.existsSync(`${filePath}.json`)) {
