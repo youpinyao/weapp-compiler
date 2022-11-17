@@ -80,7 +80,7 @@
     "stdin": false
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org"
+    "registry": "https://artifactory.antasoc.com/artifactory/api/npm/npm-virtual/"
   },
   "engines": {
     "node": ">=16"
