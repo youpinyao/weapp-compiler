@@ -26,7 +26,7 @@ function init() {
         if (fse.existsSync(`${path.resolve(parent, filePath)}.wxml`)) {
           filePath = path.resolve(parent, filePath);
         } else {
-          if (/^\//g.test(filePath)) {
+          if (/^\//g.test(compatiblePath(filePath))) {
             filePath = path.relative(context, filePath);
           }
           filePath = require.resolve(filePath);
@@ -40,7 +40,7 @@ function init() {
 
         let entryKey = filePath;
 
-        if (/\/node_modules\//g.test(filePath) || /\\node_modules\\/g.test(filePath)) {
+        if (/\/node_modules\//g.test(compatiblePath(filePath))) {
           // eslint-disable-next-line
           entryKey = compatiblePath(filePath).split('/node_modules/')[1];
 
