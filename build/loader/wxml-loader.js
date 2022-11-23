@@ -16,6 +16,10 @@ module.exports = async function loader(source) {
   const withPublicPath = (str) => {
     return `${publicPath === 'auto' ? '' : publicPath}${str.match(/"(.*)"/g)[0].replace(/"/g, '')}`;
   };
+  const withRootPath = (str) => {
+    return `/${str.match(/"(.*)"/g)[0].replace(/"/g, '')}`;
+  };
+
 
   const [assets, wxmls] = await getWxmlAssets.call(this, filePath, content);
 
@@ -23,7 +27,7 @@ module.exports = async function loader(source) {
   for (let index = 0; index < assets.length; index += 1) {
     const [attr, file] = assets[index];
     const src = await loadModule.call(this, file);
-    const fullSrc = withPublicPath(src, publicPath);
+    const fullSrc = withPublicPath(src);
 
     while (content.indexOf(attr) !== -1) {
       content = content.replace(attr, fullSrc);
@@ -32,9 +36,15 @@ module.exports = async function loader(source) {
 
   // wxml文件
   for (let index = 0; index < wxmls.length; index += 1) {
-    const [, file] = wxmls[index];
+    const [attr, file] = wxmls[index];
+    const src = await loadModule.call(this, file);
+    const fullSrc = withRootPath(src);
 
-    await loadModule.call(this, file);
+    if (/(\.wxs)$/i.test(file)) {
+      while (content.indexOf(attr) !== -1) {
+        content = content.replace(attr, fullSrc);
+      }
+    }
   }
 
   callback(null, content);
