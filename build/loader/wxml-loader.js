@@ -1,5 +1,6 @@
 const getWxmlAssets = require('../utils/getWxmlAssets');
 const loadModule = require('../utils/loadModule');
+const compatiblePath = require('../utils/compatiblePath');
 
 module.exports = async function loader(source) {
   this.cacheable(true);
@@ -17,7 +18,7 @@ module.exports = async function loader(source) {
     return `${publicPath === 'auto' ? '' : publicPath}${str.match(/"(.*)"/g)[0].replace(/"/g, '')}`;
   };
   const withRootPath = (str) => {
-    return `/${str.match(/"(.*)"/g)[0].replace(/"/g, '')}`;
+    return compatiblePath(`/${str.match(/"(.*)"/g)[0].replace(/"/g, '')}`);
   };
 
 
