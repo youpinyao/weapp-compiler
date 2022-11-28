@@ -432,6 +432,9 @@ module.exports = (options, { analyzer, quiet } = {}) => {
             use: [
               {
                 loader: 'ts-loader',
+                options: {
+                  allowTsInNodeModules: true,
+                }
               },
             ],
           },
