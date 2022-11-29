@@ -214,7 +214,12 @@ module.exports = (options, { analyzer, quiet } = {}) => {
       }),
     );
   }
-  if (fs.existsSync(path.resolve(process.cwd(), 'node_modules', 'stylelint'))) {
+  if (
+    fs.existsSync(path.resolve(process.cwd(), '.stylelintrc.json')) ||
+    fs.existsSync(path.resolve(process.cwd(), '.stylelintrc.js')) ||
+    fs.existsSync(path.resolve(process.cwd(), '.stylelintrc.yaml')) ||
+    fs.existsSync(path.resolve(process.cwd(), '.stylelintrc.yml'))
+  ) {
     plugins.push(
       new StylelintPlugin({
         files: ['**/*.{wxss,css,less}'],
@@ -434,7 +439,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
                 loader: 'ts-loader',
                 options: {
                   allowTsInNodeModules: true,
-                }
+                },
               },
             ],
           },
