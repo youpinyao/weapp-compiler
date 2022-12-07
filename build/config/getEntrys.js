@@ -25,6 +25,8 @@ function init() {
 
         if (fse.existsSync(`${path.resolve(parent, filePath)}.wxml`)) {
           filePath = path.resolve(parent, filePath);
+        } else if (fse.existsSync(`${path.resolve(parent, filePath, 'index')}.wxml`)) {
+          filePath = path.resolve(parent, filePath, 'index');
         } else {
           if (/(^\/)|:/g.test(compatiblePath(filePath))) {
             filePath = path.relative(context, filePath);
