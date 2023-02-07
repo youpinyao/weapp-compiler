@@ -4,7 +4,7 @@
 
 ```node
 
-npm i weapp-compiler@2.x -D
+npm i weapp-compiler -D
 ```
 
 ## 配置 package.json scripts
