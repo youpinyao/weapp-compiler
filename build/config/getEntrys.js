@@ -23,15 +23,16 @@ function init() {
           filePath = path.resolve(context, filePath.replace(/^\//g, ''));
         }
 
-        if (fse.existsSync(`${path.resolve(parent, filePath)}.js`)) {
+        if (fse.existsSync(`${path.resolve(parent, filePath)}.wxml`)) {
           filePath = path.resolve(parent, filePath);
+        } else if (fse.existsSync(`${path.resolve(parent, filePath, 'index')}.wxml`)) {
+          filePath = path.resolve(parent, filePath, 'index');
         } else {
-          try {
-            filePath = require.resolve(filePath);
-            filePath = filePath.replace(/(\.js)$/g, '');
-          } catch (error) {
-            console.error(error);
+          if (/(^\/)|:/g.test(compatiblePath(filePath))) {
+            filePath = path.relative(context, filePath);
           }
+          filePath = require.resolve(filePath);
+          filePath = filePath.replace(/(\.(js|ts))$/g, '');
         }
 
         if (fse.existsSync(`${filePath}.json`)) {
@@ -41,7 +42,7 @@ function init() {
 
         let entryKey = filePath;
 
-        if (/\/node_modules\//g.test(filePath) || /\\node_modules\\/g.test(filePath)) {
+        if (/\/node_modules\//g.test(compatiblePath(filePath))) {
           // eslint-disable-next-line
           entryKey = compatiblePath(filePath).split('/node_modules/')[1];
 
@@ -70,7 +71,7 @@ function init() {
   });
 
   // tabbar
-  if (fse.existsSync(path.resolve(context, 'custom-tab-bar/index.js'))) {
+  if (fse.existsSync(path.resolve(context, 'custom-tab-bar/index.wxml'))) {
     entrys['custom-tab-bar/index'] = path.resolve(context, 'custom-tab-bar/index');
   }
 
