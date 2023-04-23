@@ -24,9 +24,10 @@ program.option('-d, --development', 'process.env.BUILD_ENV = development');
 program.option('-p, --production', 'process.env.BUILD_ENV = production');
 program.option('-q, --quiet', '安静模式，打印减少');
 program.option('-sm, --source-map', 'source-map');
+program.option('-dm, --dev-mode <devMode>', '开发模式：all 全部构建，custom 部分构建');
 
 program.command('dev').action(async () => {
-  await chooseSubpackages();
+  await chooseSubpackages(program.opts().devMode);
   setBuildEnv({
     mode: ENV.DEV,
     ...program.opts(),

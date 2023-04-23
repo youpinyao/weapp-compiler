@@ -1,24 +1,30 @@
 const inquirer = require('inquirer');
 const { getAppConfig, setAppConfig } = require('../config/appConfig');
 
-async function chooseSubpackages() {
+async function chooseSubpackages(devMode) {
   const appConfig = getAppConfig();
   const subpackages = appConfig.subpackages || [];
-  const { type } = await inquirer.prompt({
-    type: 'list',
-    name: 'type',
-    message: '请选择要构建方式',
-    choices: [
-      {
-        name: '主包+所有分包',
-        value: 'all',
-      },
-      {
-        name: '主包+自定义分包',
-        value: 'custom',
-      },
-    ],
-  });
+  let type = devMode;
+
+  if (!type) {
+    (
+      await inquirer.prompt({
+        type: 'list',
+        name: 'type',
+        message: '请选择要构建方式',
+        choices: [
+          {
+            name: '主包+所有分包',
+            value: 'all',
+          },
+          {
+            name: '主包+自定义分包',
+            value: 'custom',
+          },
+        ],
+      })
+    ).type;
+  }
 
   if (type === 'custom') {
     {
