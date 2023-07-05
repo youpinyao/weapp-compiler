@@ -440,7 +440,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
             test: /\.(ts)$/i,
             use: [
               {
-                loader: 'ts-loader',
+                loader: require.resolve('ts-loader'),
                 options: {
                   allowTsInNodeModules: true,
                 },
