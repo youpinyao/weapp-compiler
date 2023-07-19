@@ -44,7 +44,7 @@ function init() {
 
         if (/\/node_modules\//g.test(compatiblePath(filePath))) {
           // eslint-disable-next-line
-          entryKey = compatiblePath(filePath).split('/node_modules/')[1];
+          entryKey = compatiblePath(filePath).split('/node_modules/').pop();
 
           addNodeModulesUsingComponent(entryKey);
         } else {

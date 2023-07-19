@@ -54,7 +54,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
   // eslint-disable-next-line
   const assetsName = (resourcePath, resourceQuery) => {
     if (/node_modules/g.test(resourcePath)) {
-      return path.relative(path.resolve(process.cwd(), 'node_modules'), resourcePath);
+      return compatiblePath(resourcePath).split('/node_modules/').pop();
     }
     return path.relative(getContext(), resourcePath);
   };
