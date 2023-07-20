@@ -10,6 +10,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const StylelintPlugin = require('stylelint-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+const CircularDependencyPlugin = require('circular-dependency-plugin')
+
 
 const WeappPlugin = require('./plugin');
 const getResourceAccept = require('./config/getResourceAccept');
@@ -67,6 +69,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
       //   return '[name].wxss';
       // },
     }),
+    new CircularDependencyPlugin(),
     new webpack.DefinePlugin({
       'process.env.BUILD_ENV': JSON.stringify(getBuildEnv()),
     }),
