@@ -10,8 +10,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const StylelintPlugin = require('stylelint-webpack-plugin');
 const autoprefixer = require('autoprefixer');
-const CircularDependencyPlugin = require('circular-dependency-plugin')
-
+const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 const WeappPlugin = require('./plugin');
 const getResourceAccept = require('./config/getResourceAccept');
@@ -69,7 +68,15 @@ module.exports = (options, { analyzer, quiet } = {}) => {
       //   return '[name].wxss';
       // },
     }),
-    new CircularDependencyPlugin(),
+    new CircularDependencyPlugin({
+      // add errors to webpack instead of warnings
+      failOnError: true,
+      // allow import cycles that include an asyncronous import,
+      // e.g. via import(/* webpackMode: "weak" */ './file.js')
+      allowAsyncCycles: false,
+      // set the current working directory for displaying module paths
+      cwd: process.cwd(),
+    }),
     new webpack.DefinePlugin({
       'process.env.BUILD_ENV': JSON.stringify(getBuildEnv()),
     }),
