@@ -28,7 +28,6 @@
     "autoprefixer": "~10.3.4",
     "babel-loader": "~8.2.2",
     "chalk": "~4.1.0",
-    "circular-dependency-plugin": "^5.2.2",
     "commander": "~7.2.0",
     "copy-webpack-plugin": "~8.1.0",
     "css-loader": "~5.2.0",
