@@ -1,7 +1,6 @@
 const path = require('path');
 const fse = require('fs-extra');
 const getContext = require('./getContext');
-const { addNodeModulesUsingComponent } = require('../utils/isNodeModulesUsingComponent');
 const compatiblePath = require('../utils/compatiblePath');
 const { getAppConfig } = require('./appConfig');
 
