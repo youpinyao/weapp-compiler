@@ -373,6 +373,9 @@ module.exports = (options, { analyzer, quiet } = {}) => {
               {
                 loader: path.resolve(__dirname, 'loader/wxml-loader'),
               },
+              {
+                loader: path.resolve(__dirname, 'loader/wxml-inject-loader'),
+              },
             ],
           },
           {

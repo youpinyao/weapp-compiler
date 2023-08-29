@@ -53,7 +53,8 @@ ossConfig: {
   dir: 'weapp-compiler-test',
 },
 // webpack 配置
-configureWebpack: {}
+configureWebpack: {},
+pageWxmlInject: ''
 };
 `),
   );
