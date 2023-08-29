@@ -54,6 +54,7 @@ ossConfig: {
 },
 // webpack 配置
 configureWebpack: {},
+// 字符串或函数 (filePath: string) => string
 pageWxmlInject: ''
 };
 `),

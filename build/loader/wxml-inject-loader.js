@@ -12,7 +12,10 @@ module.exports = async function loader(source) {
   let content = source.toString();
 
   if (pageWxmlInject && pageEntrys.includes(compatiblePath(filePath).replace(/(\.wxml)$/i, ''))) {
-    content += pageWxmlInject;
+    content +=
+      typeof pageWxmlInject === 'function'
+        ? pageWxmlInject(compatiblePath(filePath))
+        : pageWxmlInject;
   }
 
   callback(null, content);
