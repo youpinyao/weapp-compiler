@@ -63,6 +63,10 @@ module.exports = {
     bucket: '<Your Bucket>',
     dir: 'weapp-compiler-test',
   },
+  // webpack 配置
+  configureWebpack: {},
+  // 字符串或函数 (filePath: string) => string
+  pageWxmlInject: ''
 };
 ```
 
