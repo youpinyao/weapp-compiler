@@ -16,8 +16,7 @@ module.exports = (opts) => {
 
   compiler.watch({}, (err, stats) => {
     if (err) {
-      console.error(err);
-      return;
+      throw new Error(err);
     }
 
     if (stats.hasErrors()) {
