@@ -235,7 +235,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
     plugins.push(
       new ESLintPlugin({
         extensions: ['js', 'ts'],
-        lintDirtyModulesOnly: true,
+        lintDirtyModulesOnly: false,
         fix: false,
         cache: true,
         emitError: true,
