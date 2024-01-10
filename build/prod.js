@@ -21,7 +21,7 @@ module.exports = (opts) => {
     }
 
     if (stats.hasErrors()) {
-      console.log(
+      throw new Error(
         stats.toString({
           chunks: false, // Makes the build much quieter
           colors: true, // Shows colors in the console
