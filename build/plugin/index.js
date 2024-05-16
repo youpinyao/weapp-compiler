@@ -7,6 +7,7 @@ const getResourceAccept = require('../config/getResourceAccept');
 const compatiblePath = require('../utils/compatiblePath');
 const { isCopyFile } = require('../utils/isCopyFile');
 const getContext = require('../config/getContext');
+const getConfig = require('../config/getConfig');
 
 const assetsDir = getAssets();
 const context = getContext();
@@ -61,6 +62,10 @@ class WeappPlugin {
         },
         async (assets) => {
           // this callback will run against assets added later by plugins.
+
+          const { vendors = {} } = getConfig();
+          const hasExtraVendors = {};
+
           const items = Object.entries(assets)
             .map(([name, source]) => {
               return {
@@ -98,6 +103,14 @@ class WeappPlugin {
             if (hasRuntimeJs === false && item.name === 'runtime.js') {
               hasRuntimeJs = true;
             }
+
+            Object.entries(vendors).forEach(([key, config]) => {
+              const name = `${config.name || key}.js`;
+              if (hasExtraVendors[name] !== true && item.name === name) {
+                hasExtraVendors[name] = true;
+              }
+            });
+
             if (/subpackage_common/g.test(item.name)) {
               const pathInfo = path.parse(item.name);
 
@@ -164,6 +177,12 @@ class WeappPlugin {
               hasVendorJs && sourceInsert(content, newSource, `require('./vendors.js');`);
               // eslint-disable-next-line no-unused-expressions
               hasRuntimeJs && sourceInsert(content, newSource, `require('./runtime.js');`);
+
+              Object.entries(hasExtraVendors).forEach(([name, insert]) => {
+                if (insert) {
+                  sourceInsert(content, newSource, `require('./${name}');`);
+                }
+              });
             }
 
             // 注入公共模块 wxss
