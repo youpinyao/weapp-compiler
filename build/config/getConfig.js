@@ -54,6 +54,12 @@ ossConfig: {
 },
 // webpack 配置
 configureWebpack: {},
+// 公共模块额外配置
+vendors: {
+  request: {
+    test: /utils\/request/,
+  }
+},
 // 字符串或函数 (filePath: string) => string
 pageWxmlInject: '',
 };

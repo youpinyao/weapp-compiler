@@ -30,7 +30,7 @@ const isKeepFile = require('./utils/isKeepFile');
 
 const assets = getAssets();
 const context = getContext();
-const { alias, publicPath = 'auto', copyFiles = [], configureWebpack = {} } = getConfig();
+const { alias, publicPath = 'auto', copyFiles = [], configureWebpack = {}, vendors } = getConfig();
 const output = getOutput();
 
 const defaultCopyFiles = ['project.config.json', 'project.private.config.json', 'sitemap.json'];
@@ -94,6 +94,10 @@ module.exports = (options, { analyzer, quiet } = {}) => {
       test(module) {
         const resource = getResource(module);
 
+        // 额外vendor配置
+        if (!!Object.values(vendors ?? {}).find((item) => item.test.test(resource))) {
+          return false;
+        }
         if (resource === false) {
           return true;
         }
@@ -122,6 +126,10 @@ module.exports = (options, { analyzer, quiet } = {}) => {
       test(module) {
         const resource = getResource(module);
 
+        // 额外vendor配置
+        if (!!Object.values(vendors ?? {}).find((item) => item.test.test(resource))) {
+          return false;
+        }
         if (resource === false) {
           return false;
         }
@@ -160,6 +168,16 @@ module.exports = (options, { analyzer, quiet } = {}) => {
       },
       minChunks: 2,
       reuseExistingChunk: true,
+    };
+  });
+
+  // 额外vendor配置
+  Object.entries(vendors).forEach((name, config) => {
+    cacheGroups[name] = {
+      minChunks: 2,
+      reuseExistingChunk: true,
+      name,
+      ...config,
     };
   });
 
