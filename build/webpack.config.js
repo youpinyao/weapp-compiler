@@ -172,7 +172,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
   });
 
   // 额外vendor配置
-  Object.entries(vendors).forEach((name, config) => {
+  Object.entries(vendors).forEach(([name, config]) => {
     cacheGroups[name] = {
       minChunks: 2,
       reuseExistingChunk: true,
