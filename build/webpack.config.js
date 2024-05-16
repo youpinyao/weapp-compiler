@@ -30,7 +30,7 @@ const isKeepFile = require('./utils/isKeepFile');
 
 const assets = getAssets();
 const context = getContext();
-const { alias, publicPath = 'auto', copyFiles = [], configureWebpack = {}, vendors } = getConfig();
+const { alias, publicPath = 'auto', copyFiles = [], configureWebpack = {}, vendors = {} } = getConfig();
 const output = getOutput();
 
 const defaultCopyFiles = ['project.config.json', 'project.private.config.json', 'sitemap.json'];
