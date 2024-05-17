@@ -440,7 +440,6 @@ module.exports = (options, { analyzer, quiet } = {}) => {
                     [
                       '@babel/preset-env',
                       {
-                        targets: 'defaults',
                         modules: 'commonjs',
                       },
                     ],
@@ -449,6 +448,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
                     '@babel/plugin-transform-runtime',
                     '@babel/plugin-proposal-optional-chaining',
                     '@babel/plugin-proposal-nullish-coalescing-operator',
+                    '@babel/plugin-transform-class-properties',
                   ],
                 },
               },
