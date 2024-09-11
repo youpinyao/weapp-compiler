@@ -7,7 +7,7 @@ async function chooseSubpackages(devMode) {
   let type = devMode;
 
   if (!type) {
-    (
+    type = (
       await inquirer.prompt({
         type: 'list',
         name: 'type',
