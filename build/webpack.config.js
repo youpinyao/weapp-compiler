@@ -67,12 +67,12 @@ module.exports = (options, { analyzer, quiet } = {}) => {
       if (/node_modules/g.test(resourcePath)) {
         name = compatiblePath(resourcePath).split('/node_modules/').pop();
       } else {
-        name = path.relative(getContext(), resourcePath);
+        name = compatiblePath(path.relative(getContext(), resourcePath));
       }
 
       const nameParse = path.parse(name);
 
-      return `${nameParse.dir}/${nameParse.name}${fix ? `-${fix}` : ''}${nameParse.ext}`;
+      return compatiblePath(`${nameParse.dir}/${nameParse.name}${fix ? `-${fix}` : ''}${nameParse.ext}`);
     };
   const plugins = [
     new WeappPlugin(),

@@ -42,7 +42,7 @@ module.exports = async function loader(source) {
 
     if (/(\.wxs)$/i.test(file)) {
       while (content.indexOf(name) !== -1) {
-        content = content.replace(name, path.relative(fileInfoDir, fullSrc));
+        content = content.replace(name, compatiblePath(path.relative(fileInfoDir, fullSrc)));
       }
     }
   }

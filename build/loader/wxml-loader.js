@@ -19,7 +19,9 @@ module.exports = async function loader(source) {
     },
   } = this;
   const withPublicPath = (str) => {
-    return `${publicPath === 'auto' ? '' : publicPath}${str.match(/"(.*)"/g)[0].replace(/"/g, '')}`;
+    return compatiblePath(
+      `${publicPath === 'auto' ? '' : publicPath}${str.match(/"(.*)"/g)[0].replace(/"/g, '')}`,
+    );
   };
   const withDistPath = (str) => {
     if (str.startsWith(context)) {
@@ -56,7 +58,7 @@ module.exports = async function loader(source) {
 
     if (/(\.wxs)$/i.test(file)) {
       while (content.indexOf(attr) !== -1) {
-        content = content.replace(attr, path.relative(fileInfoDir, fullSrc));
+        content = content.replace(attr, compatiblePath(path.relative(fileInfoDir, fullSrc)));
       }
     }
   }
