@@ -19,6 +19,8 @@ if (fse.existsSync(weapp)) {
 const path = require('path');
 
 module.exports = {
+eslint: true,
+stylelint: true,
 // 路径别名
 alias: {
   '@utils': path.resolve(__dirname, 'src/utils'),

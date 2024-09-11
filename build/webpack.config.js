@@ -36,6 +36,8 @@ const {
   copyFiles = [],
   configureWebpack = {},
   vendors = {},
+  eslint = true,
+  stylelint = true,
 } = getConfig();
 const output = getOutput();
 
@@ -247,10 +249,11 @@ module.exports = (options, { analyzer, quiet } = {}) => {
     );
   }
   if (
-    fs.existsSync(path.resolve(process.cwd(), '.stylelintrc.json')) ||
-    fs.existsSync(path.resolve(process.cwd(), '.stylelintrc.js')) ||
-    fs.existsSync(path.resolve(process.cwd(), '.stylelintrc.yaml')) ||
-    fs.existsSync(path.resolve(process.cwd(), '.stylelintrc.yml'))
+    (fs.existsSync(path.resolve(process.cwd(), '.stylelintrc.json')) ||
+      fs.existsSync(path.resolve(process.cwd(), '.stylelintrc.js')) ||
+      fs.existsSync(path.resolve(process.cwd(), '.stylelintrc.yaml')) ||
+      fs.existsSync(path.resolve(process.cwd(), '.stylelintrc.yml'))) &&
+    stylelint !== false
   ) {
     plugins.push(
       new StylelintPlugin({
@@ -263,7 +266,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
       }),
     );
   }
-  if (fs.existsSync(path.resolve(process.cwd(), 'node_modules', 'eslint'))) {
+  if (fs.existsSync(path.resolve(process.cwd(), 'node_modules', 'eslint')) && eslint !== false) {
     plugins.push(
       new ESLintPlugin({
         extensions: ['js', 'ts'],
