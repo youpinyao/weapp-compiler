@@ -30,7 +30,13 @@ const isKeepFile = require('./utils/isKeepFile');
 
 const assets = getAssets();
 const context = getContext();
-const { alias, publicPath = 'auto', copyFiles = [], configureWebpack = {}, vendors = {} } = getConfig();
+const {
+  alias,
+  publicPath = 'auto',
+  copyFiles = [],
+  configureWebpack = {},
+  vendors = {},
+} = getConfig();
 const output = getOutput();
 
 const defaultCopyFiles = ['project.config.json', 'project.private.config.json', 'sitemap.json'];
@@ -52,12 +58,20 @@ module.exports = (options, { analyzer, quiet } = {}) => {
   const entrys = getEntrys();
   const appConfig = getAppConfig();
   // eslint-disable-next-line
-  const assetsName = (resourcePath, resourceQuery) => {
-    if (/node_modules/g.test(resourcePath)) {
-      return compatiblePath(resourcePath).split('/node_modules/').pop();
-    }
-    return path.relative(getContext(), resourcePath);
-  };
+  const assetsName =
+    (fix = '') =>
+    (resourcePath, resourceQuery) => {
+      let name = resourcePath;
+      if (/node_modules/g.test(resourcePath)) {
+        name = compatiblePath(resourcePath).split('/node_modules/').pop();
+      } else {
+        name = path.relative(getContext(), resourcePath);
+      }
+
+      const nameParse = path.parse(name);
+
+      return `${nameParse.dir}/${nameParse.name}${fix ? `-${fix}` : ''}${nameParse.ext}`;
+    };
   const plugins = [
     new WeappPlugin(),
     new MiniCssExtractPlugin({
@@ -392,7 +406,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
               {
                 loader: path.resolve(__dirname, 'loader/json-loader'),
                 options: {
-                  name: assetsName,
+                  name: assetsName(),
                 },
               },
             ],
@@ -404,7 +418,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
               {
                 loader: 'file-loader',
                 options: {
-                  name: assetsName,
+                  name: assetsName('build'),
                 },
               },
               {
@@ -418,7 +432,7 @@ module.exports = (options, { analyzer, quiet } = {}) => {
               {
                 loader: 'file-loader',
                 options: {
-                  name: assetsName,
+                  name: assetsName(),
                 },
               },
               {

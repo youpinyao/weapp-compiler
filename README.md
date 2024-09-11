@@ -1,5 +1,11 @@
 # weapp compiler with webpack5
 
+## 注意
+
+```shell
+如果构建卡主 可能是 loadModule 问题
+```
+
 ## 安装
 
 ```node
