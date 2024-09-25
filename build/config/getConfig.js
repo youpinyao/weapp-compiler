@@ -19,6 +19,8 @@ if (fse.existsSync(weapp)) {
 const path = require('path');
 
 module.exports = {
+// 忽略分包
+ignoreSubpackages: [],
 eslint: true,
 stylelint: true,
 // 路径别名
