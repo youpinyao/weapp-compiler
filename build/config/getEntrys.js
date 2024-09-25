@@ -4,6 +4,9 @@ const getContext = require('./getContext');
 const { addNodeModulesUsingComponent } = require('../utils/isNodeModulesUsingComponent');
 const compatiblePath = require('../utils/compatiblePath');
 const { getAppConfig } = require('./appConfig');
+const getConfig = require('./getConfig');
+
+const { ignoreSubpackages = [] } = getConfig();
 
 const context = getContext();
 let entrys;
@@ -77,6 +80,8 @@ function init() {
 
   // subpackages
   (appConfig.subpackages || []).forEach((pkg) => {
+    if (ignoreSubpackages && ignoreSubpackages.length && ignoreSubpackages.includes(pkg.root))
+      return;
     (pkg.pages || []).forEach((page) => {
       entrys[compatiblePath(path.join(pkg.root, page))] = path.resolve(context, pkg.root, page);
     });
