@@ -72,7 +72,11 @@ module.exports = (options, { analyzer, quiet } = {}) => {
 
       const nameParse = path.parse(name);
 
-      return compatiblePath(`${nameParse.dir}/${nameParse.name}${fix ? `-${fix}` : ''}${nameParse.ext}`);
+      return compatiblePath(
+        [nameParse.dir, `${nameParse.name}${fix ? `-${fix}` : ''}${nameParse.ext}`]
+          .filter((item) => !!item)
+          .join('/'),
+      );
     };
   const plugins = [
     new WeappPlugin(),
