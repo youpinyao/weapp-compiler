@@ -22,6 +22,7 @@ program.option('-a, --analyzer', 'webpack-bundle-analyzer');
 program.option('-s, --simulation', 'process.env.BUILD_ENV = simulation');
 program.option('-d, --development', 'process.env.BUILD_ENV = development');
 program.option('-p, --production', 'process.env.BUILD_ENV = production');
+program.option('-e, --environment <env>', '自定义环境，或者simulation，development或production');
 program.option('-q, --quiet', '安静模式，打印减少');
 program.option('-sm, --source-map', 'source-map');
 program.option('-dm, --dev-mode <devMode>', '开发模式：all 全部构建，custom 部分构建');

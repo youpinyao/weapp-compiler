@@ -3,7 +3,7 @@ const recordEnv = require('./recordEnv');
 
 let env = '';
 
-function setBuildEnv({ mode, development, simulation, production }) {
+function setBuildEnv({ mode, development, simulation, production, environment }) {
   env = mode;
 
   if (development) {
@@ -14,6 +14,9 @@ function setBuildEnv({ mode, development, simulation, production }) {
   }
   if (production) {
     env = ENV.PROD;
+  }
+  if (environment) {
+    env = environment;
   }
 
   recordEnv({
